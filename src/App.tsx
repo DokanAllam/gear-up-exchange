@@ -6,8 +6,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Vehicles from "./pages/Vehicles";
+import VehicleDetail from "./pages/VehicleDetail";
 import Dealers from "./pages/Dealers";
+import DealerDetail from "./pages/DealerDetail";
 import Services from "./pages/Services";
+import ServiceDetail from "./pages/ServiceDetail";
 import Sell from "./pages/Sell";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -20,6 +23,14 @@ import Community from "./pages/Community";
 import QuestionDetail from "./pages/QuestionDetail";
 import DealerApplication from "./pages/DealerApplication";
 import ServiceApplication from "./pages/ServiceApplication";
+import TermsConditions from "./pages/TermsConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Careers from "./pages/Careers";
+import JobDetail from "./pages/JobDetail";
+import LearnMore from "./pages/LearnMore";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const queryClient = new QueryClient();
 
@@ -31,13 +42,25 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          
+          {/* Vehicle Routes */}
           <Route path="/vehicles" element={<Vehicles />} />
+          <Route path="/vehicles/:id" element={<VehicleDetail />} />
+          
+          {/* Dealer Routes */}
           <Route path="/dealers" element={<Dealers />} />
+          <Route path="/dealers/:id" element={<DealerDetail />} />
+          
+          {/* Service Routes */}
           <Route path="/services" element={<Services />} />
+          <Route path="/services/:id" element={<ServiceDetail />} />
+          
+          {/* User Routes */}
           <Route path="/sell" element={<Sell />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           
           {/* Dashboard Routes */}
           <Route path="/admin" element={<AdminDashboard />} />
@@ -51,6 +74,17 @@ const App = () => (
           {/* Application Routes */}
           <Route path="/apply/dealer" element={<DealerApplication />} />
           <Route path="/apply/service" element={<ServiceApplication />} />
+          
+          {/* Legal & Info Routes */}
+          <Route path="/terms" element={<TermsConditions />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/learn-more" element={<LearnMore />} />
+          
+          {/* Career Routes */}
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/careers/:id" element={<JobDetail />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
