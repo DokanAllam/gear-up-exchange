@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star, Calendar, DollarSign, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface ServiceCardProps {
   id: string;
@@ -19,6 +20,7 @@ interface ServiceCardProps {
 }
 
 const ServiceCard = ({
+  id,
   name,
   image,
   location,
@@ -75,10 +77,12 @@ const ServiceCard = ({
         </div>
 
         <div className="flex space-x-2">
-          <Button className="flex-1 btn-primary">
-            <Calendar className="h-4 w-4 mr-2" />
-            Book Now
-          </Button>
+          <Link to={`/services/${id}`} className="flex-1">
+            <Button className="w-full btn-primary">
+              <Calendar className="h-4 w-4 mr-2" />
+              Book Now
+            </Button>
+          </Link>
           <Button variant="outline" size="icon" className="border-primary text-primary hover:bg-primary hover:text-white">
             <Phone className="h-4 w-4" />
           </Button>

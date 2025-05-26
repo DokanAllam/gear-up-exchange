@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Heart, Share2, Phone, Mail, MapPin, Calendar, Gauge, Fuel, Users, Star, Shield, Camera } from 'lucide-react';
+import { ArrowLeft, Heart, Share2, Phone, Mail, MapPin, Calendar, Gauge, Fuel, Users, Star, Shield, Camera, MessageCircle } from 'lucide-react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -61,7 +61,33 @@ const VehicleDetail = () => {
       mpg: '51 city / 53 highway',
       seats: 5,
       drivetrain: 'FWD'
-    }
+    },
+    sellerReviews: [
+      {
+        id: '1',
+        reviewer: 'Sarah Johnson',
+        rating: 5,
+        date: '2024-01-15',
+        comment: 'Excellent seller! The car was exactly as described and John was very professional throughout the entire process. Highly recommended!',
+        vehiclePurchased: '2021 Honda Civic'
+      },
+      {
+        id: '2',
+        reviewer: 'Michael Chen',
+        rating: 5,
+        date: '2024-01-10',
+        comment: 'Great experience buying from John. Transparent pricing, no hidden fees, and the vehicle was in perfect condition. Would buy again!',
+        vehiclePurchased: '2020 Toyota Corolla'
+      },
+      {
+        id: '3',
+        reviewer: 'Emily Davis',
+        rating: 4,
+        date: '2023-12-28',
+        comment: 'Good seller with fair prices. The car had minor issues that were not mentioned, but John was quick to resolve them.',
+        vehiclePurchased: '2019 Nissan Altima'
+      }
+    ]
   };
 
   const relatedVehicles = [
@@ -160,10 +186,11 @@ const VehicleDetail = () => {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="specs">Specifications</TabsTrigger>
                     <TabsTrigger value="features">Features</TabsTrigger>
+                    <TabsTrigger value="reviews">Seller Reviews</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="overview" className="mt-6">
@@ -214,6 +241,48 @@ const VehicleDetail = () => {
                           <span>{feature}</span>
                         </div>
                       ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="reviews" className="mt-6">
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold">Seller Reviews</h3>
+                        <div className="flex items-center space-x-2">
+                          <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                          <span className="font-semibold">{vehicle.seller.rating}</span>
+                          <span className="text-gray-600">({vehicle.seller.reviews} reviews)</span>
+                        </div>
+                      </div>
+                      
+                      {vehicle.sellerReviews.map((review) => (
+                        <Card key={review.id} className="bg-gray-50">
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <h4 className="font-semibold">{review.reviewer}</h4>
+                                <p className="text-sm text-gray-600">Purchased: {review.vehiclePurchased}</p>
+                              </div>
+                              <div className="text-right">
+                                <div className="flex items-center space-x-1 mb-1">
+                                  {[...Array(review.rating)].map((_, i) => (
+                                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                  ))}
+                                </div>
+                                <p className="text-sm text-gray-600">{review.date}</p>
+                              </div>
+                            </div>
+                            <p className="text-gray-700">{review.comment}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                      
+                      <div className="text-center">
+                        <Button variant="outline">
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Load More Reviews
+                        </Button>
+                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>

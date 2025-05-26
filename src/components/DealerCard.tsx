@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star, Car, Phone, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface DealerCardProps {
   id: string;
@@ -19,6 +20,7 @@ interface DealerCardProps {
 }
 
 const DealerCard = ({
+  id,
   name,
   image,
   location,
@@ -77,9 +79,11 @@ const DealerCard = ({
         </div>
 
         <div className="flex space-x-2">
-          <Button className="flex-1 btn-primary">
-            View Showroom
-          </Button>
+          <Link to={`/dealers/${id}`} className="flex-1">
+            <Button className="w-full btn-primary">
+              View Showroom
+            </Button>
+          </Link>
           <Button variant="outline" size="icon" className="border-primary text-primary hover:bg-primary hover:text-white">
             <Phone className="h-4 w-4" />
           </Button>

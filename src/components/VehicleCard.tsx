@@ -3,6 +3,7 @@ import React from 'react';
 import { Car, Users, MapPin, Star, Calendar, Fuel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 interface VehicleCardProps {
   id: string;
@@ -132,12 +133,11 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
 
         {/* Action Buttons */}
         <div className="flex space-x-3">
-          <Button 
-            className="flex-1 btn-primary"
-            onClick={() => console.log('View details:', id)}
-          >
-            View Details
-          </Button>
+          <Link to={`/vehicles/${id}`} className="flex-1">
+            <Button className="w-full btn-primary">
+              View Details
+            </Button>
+          </Link>
           <Button 
             variant="outline" 
             className="flex-1 border-primary text-primary hover:bg-primary hover:text-white"
