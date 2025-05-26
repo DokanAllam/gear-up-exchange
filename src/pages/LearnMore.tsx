@@ -1,10 +1,9 @@
-
 import React from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Car, Users, Wrench, Community, Shield, Zap, Globe, Award, TrendingUp, CheckCircle } from 'lucide-react';
+import { Car, Users, Wrench, MessageCircle, Shield, Zap, Globe, Award, TrendingUp, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const LearnMore = () => {
@@ -31,7 +30,7 @@ const LearnMore = () => {
       color: 'from-purple-500 to-purple-600'
     },
     {
-      icon: Community,
+      icon: MessageCircle,
       title: 'Community Hub',
       description: 'Connect with automotive enthusiasts and experts',
       features: ['Discussion forums', 'Expert advice', 'User reviews', 'Knowledge sharing'],
