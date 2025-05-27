@@ -6,7 +6,9 @@ import DealerCard from '@/components/DealerCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, MapPin, Star, Users } from 'lucide-react';
+import { Search, MapPin, Star, Users, Gift } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const Dealers = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,6 +54,33 @@ const Dealers = () => {
     }
   ];
 
+  const dealerOffers = [
+    {
+      id: '1',
+      dealerName: 'Premium Auto Gallery',
+      offerTitle: 'Luxury Vehicle Sale',
+      description: 'Up to 20% off on premium luxury vehicles',
+      validUntil: '2024-02-28',
+      image: '/placeholder.svg'
+    },
+    {
+      id: '2',
+      dealerName: 'City Motors',
+      offerTitle: 'Zero Down Payment',
+      description: 'Get your dream car with zero down payment on approved credit',
+      validUntil: '2024-02-15',
+      image: '/placeholder.svg'
+    },
+    {
+      id: '3',
+      dealerName: 'Elite Auto House',
+      offerTitle: 'Extended Warranty',
+      description: 'Free 3-year extended warranty on all certified pre-owned vehicles',
+      validUntil: '2024-03-15',
+      image: '/placeholder.svg'
+    }
+  ];
+
   const filteredDealers = dealers.filter(dealer => {
     if (location !== 'all' && !dealer.location.toLowerCase().includes(location.toLowerCase())) return false;
     if (searchQuery && !dealer.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -72,6 +101,43 @@ const Dealers = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Connect with verified dealers and explore their showrooms. Find the perfect vehicle from trusted partners.
             </p>
+          </div>
+
+          {/* Special Offers Section */}
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-secondary flex items-center">
+                <Gift className="h-6 w-6 mr-2 text-primary" />
+                Special Offers
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {dealerOffers.map((offer, index) => (
+                <Card key={offer.id} className="card-hover bg-white border-0 shadow-lg overflow-hidden animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div className="relative">
+                    <img
+                      src={offer.image}
+                      alt={offer.offerTitle}
+                      className="w-full h-40 object-cover"
+                    />
+                    <Badge className="absolute top-4 left-4 bg-orange-500 text-white">
+                      Limited Time
+                    </Badge>
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-bold text-lg mb-2">{offer.offerTitle}</h3>
+                    <p className="text-sm text-gray-600 mb-2">by {offer.dealerName}</p>
+                    <p className="text-gray-700 mb-3">{offer.description}</p>
+                    <p className="text-sm text-orange-600 font-medium mb-3">
+                      Valid until: {new Date(offer.validUntil).toLocaleDateString()}
+                    </p>
+                    <Button className="w-full btn-primary">
+                      View Offer
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
 
           {/* Search and Filters */}

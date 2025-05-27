@@ -1,12 +1,15 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Car, User, Users, Menu, X } from 'lucide-react';
+import { Car, User, Users, Menu, X, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  
+  // Mock authentication state - in real app this would come from auth context
+  const isAuthenticated = true; // Mock value
 
   const navItems = [
     { label: 'Buy Vehicles', href: '/vehicles', icon: Car },
@@ -55,6 +58,13 @@ const Header = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
+            {isAuthenticated && (
+              <Link to="/wishlist">
+                <Button variant="outline" size="icon" className="border-red-200 text-red-600 hover:bg-red-50">
+                  <Heart className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
             <Link to="/login">
               <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
                 Login
@@ -103,6 +113,14 @@ const Header = () => {
                 );
               })}
               <div className="flex flex-col space-y-3 pt-4 border-t">
+                {isAuthenticated && (
+                  <Link to="/wishlist" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50">
+                      <Heart className="h-4 w-4 mr-2" />
+                      Wishlist
+                    </Button>
+                  </Link>
+                )}
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white">
                     Login

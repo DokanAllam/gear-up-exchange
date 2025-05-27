@@ -15,6 +15,7 @@ import Sell from "./pages/Sell";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminDashboard";
 import DealerDashboard from "./pages/DealerDashboard";
@@ -60,6 +61,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           
           {/* Dashboard Routes */}

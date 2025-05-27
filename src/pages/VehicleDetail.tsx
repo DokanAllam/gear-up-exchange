@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Share2, Phone, Mail, MapPin, Calendar, Gauge, Fuel, Users, Star, Shield, Camera, MessageCircle } from 'lucide-react';
@@ -382,17 +381,17 @@ const VehicleDetail = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedVehicles.map((vehicle) => (
-                <Link key={vehicle.id} to={`/vehicles/${vehicle.id}`} className="block">
+              {relatedVehicles.map((relatedVehicle) => (
+                <Link key={relatedVehicle.id} to={`/vehicles/${relatedVehicle.id}`} className="block">
                   <div className="bg-white rounded-lg border hover:shadow-lg transition-all duration-300 card-hover">
                     <img 
-                      src={vehicle.image} 
-                      alt={vehicle.title}
+                      src={relatedVehicle.image} 
+                      alt={relatedVehicle.title}
                       className="w-full h-48 object-cover rounded-t-lg"
                     />
                     <div className="p-4">
-                      <h3 className="font-semibold mb-2">{vehicle.title}</h3>
-                      <div className="text-xl font-bold text-primary">${vehicle.price.toLocaleString()}</div>
+                      <h3 className="font-semibold mb-2">{relatedVehicle.title}</h3>
+                      <div className="text-xl font-bold text-primary">${relatedVehicle.price.toLocaleString()}</div>
                     </div>
                   </div>
                 </Link>

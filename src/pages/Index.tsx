@@ -3,6 +3,8 @@ import React from 'react';
 import Header from '@/components/Layout/Header';
 import Hero from '@/components/Hero';
 import FeaturedSection from '@/components/FeaturedSection';
+import TopDealers from '@/components/TopDealers';
+import TopServiceCenters from '@/components/TopServiceCenters';
 import ServicesSection from '@/components/ServicesSection';
 import DownloadApp from '@/components/DownloadApp';
 import CommunitySection from '@/components/CommunitySection';
@@ -15,6 +17,8 @@ const Index = () => {
       <main>
         <Hero />
         <FeaturedSection />
+        <TopDealers />
+        <TopServiceCenters />
         <ServicesSection />
         <DownloadApp />
         <CommunitySection />

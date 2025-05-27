@@ -4,12 +4,26 @@ import { Car, Search, MapPin, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [location, setLocation] = useState('');
   const [priceRange, setPriceRange] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    // Create search params
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('search', searchQuery);
+    if (vehicleType) params.set('type', vehicleType);
+    if (location) params.set('location', location);
+    if (priceRange) params.set('price', priceRange);
+    
+    // Navigate to vehicles page with search params
+    navigate(`/vehicles?${params.toString()}`);
+  };
 
   return (
     <section className="relative min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-secondary via-secondary/95 to-primary/20 overflow-hidden">
@@ -70,6 +84,7 @@ const Hero = () => {
                   placeholder="Search cars, bikes, motorcycles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   className="pl-10 h-12 border-gray-300 focus:border-primary focus:ring-primary"
                 />
               </div>
@@ -105,6 +120,7 @@ const Hero = () => {
                   placeholder="City, State"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   className="pl-10 h-12 border-gray-300 focus:border-primary focus:ring-primary"
                 />
               </div>
@@ -112,7 +128,7 @@ const Hero = () => {
 
             {/* Search Button */}
             <div>
-              <Button className="w-full h-12 btn-primary text-lg font-semibold">
+              <Button onClick={handleSearch} className="w-full h-12 btn-primary text-lg font-semibold">
                 <Search className="h-5 w-5 mr-2" />
                 Search
               </Button>
@@ -125,6 +141,10 @@ const Hero = () => {
             {['BMW', 'Mercedes', 'Honda', 'Toyota', 'Harley Davidson'].map((brand) => (
               <button
                 key={brand}
+                onClick={() => {
+                  setSearchQuery(brand);
+                  handleSearch();
+                }}
                 className="px-4 py-2 text-sm bg-gray-100 hover:bg-primary hover:text-white rounded-full transition-all duration-300 font-medium"
               >
                 {brand}
