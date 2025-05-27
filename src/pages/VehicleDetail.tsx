@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Heart, Share2, Phone, Mail, MapPin, Calendar, Gauge, Fuel, Users, Star, Shield, Camera, MessageCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Heart, Share2, Phone, Mail, MapPin, Calendar, Gauge, Fuel, Users, Star, Shield, MessageCircle } from 'lucide-react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -11,8 +11,14 @@ import { Avatar, AvatarContent, AvatarImage } from '@/components/ui/avatar';
 
 const VehicleDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Mock vehicle data
   const vehicle = {
@@ -90,10 +96,29 @@ const VehicleDetail = () => {
   };
 
   const relatedVehicles = [
-    { id: '2', title: '2021 Honda Accord', price: 26500, image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400' },
-    { id: '3', title: '2023 Nissan Altima', price: 29000, image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400' },
-    { id: '4', title: '2022 Hyundai Sonata', price: 27500, image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400' }
+    { 
+      id: '2', 
+      title: '2021 Honda Accord', 
+      price: 26500, 
+      image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400' 
+    },
+    { 
+      id: '3', 
+      title: '2023 Nissan Altima', 
+      price: 29000, 
+      image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400' 
+    },
+    { 
+      id: '4', 
+      title: '2022 Hyundai Sonata', 
+      price: 27500, 
+      image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400' 
+    }
   ];
+
+  const handleSimilarVehicleClick = (vehicleId: string) => {
+    navigate(`/vehicles/${vehicleId}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -382,19 +407,21 @@ const VehicleDetail = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedVehicles.map((relatedVehicle) => (
-                <Link key={relatedVehicle.id} to={`/vehicles/${relatedVehicle.id}`} className="block">
-                  <div className="bg-white rounded-lg border hover:shadow-lg transition-all duration-300 card-hover">
-                    <img 
-                      src={relatedVehicle.image} 
-                      alt={relatedVehicle.title}
-                      className="w-full h-48 object-cover rounded-t-lg"
-                    />
-                    <div className="p-4">
-                      <h3 className="font-semibold mb-2">{relatedVehicle.title}</h3>
-                      <div className="text-xl font-bold text-primary">${relatedVehicle.price.toLocaleString()}</div>
-                    </div>
+                <div 
+                  key={relatedVehicle.id} 
+                  className="bg-white rounded-lg border hover:shadow-lg transition-all duration-300 card-hover cursor-pointer"
+                  onClick={() => handleSimilarVehicleClick(relatedVehicle.id)}
+                >
+                  <img 
+                    src={relatedVehicle.image} 
+                    alt={relatedVehicle.title}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <div className="p-4">
+                    <h3 className="font-semibold mb-2">{relatedVehicle.title}</h3>
+                    <div className="text-xl font-bold text-primary">${relatedVehicle.price.toLocaleString()}</div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </CardContent>

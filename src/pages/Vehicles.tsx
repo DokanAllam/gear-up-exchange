@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import VehicleCard from '@/components/VehicleCard';
@@ -8,7 +8,7 @@ import VehicleComparison from '@/components/VehicleComparison';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Grid, List, SlidersHorizontal } from 'lucide-react';
+import { Grid, List } from 'lucide-react';
 
 const Vehicles = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -16,13 +16,18 @@ const Vehicles = () => {
   const [loading, setLoading] = useState(false);
   const [comparisonVehicles, setComparisonVehicles] = useState<any[]>([]);
 
-  // Mock data for vehicles
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Mock data for vehicles with proper images
   const vehicles = [
     {
       id: '1',
       title: '2023 BMW M3 Competition',
       price: 75000,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop',
       year: 2023,
       mileage: '5,000 km',
       fuelType: 'Petrol',
@@ -38,7 +43,7 @@ const Vehicles = () => {
       id: '2',
       title: '2024 Harley Davidson Sportster',
       price: 28000,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
       year: 2024,
       mileage: '0 km',
       fuelType: 'Petrol',
@@ -50,7 +55,38 @@ const Vehicles = () => {
       dealerName: 'HD Los Angeles',
       type: 'motorcycle' as const
     },
-    // Add more vehicles...
+    {
+      id: '3',
+      title: '2022 Tesla Model S',
+      price: 89000,
+      image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&h=300&fit=crop',
+      year: 2022,
+      mileage: '15,000 km',
+      fuelType: 'Electric',
+      transmission: 'Automatic',
+      location: 'San Francisco, CA',
+      rating: 4.9,
+      reviewCount: 25,
+      condition: 'used' as const,
+      dealerName: 'Tesla SF',
+      type: 'car' as const
+    },
+    {
+      id: '4',
+      title: '2023 Toyota Camry Hybrid',
+      price: 32000,
+      image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=300&fit=crop',
+      year: 2023,
+      mileage: '8,000 km',
+      fuelType: 'Hybrid',
+      transmission: 'Automatic',
+      location: 'Miami, FL',
+      rating: 4.7,
+      reviewCount: 18,
+      condition: 'used' as const,
+      dealerName: 'Toyota Miami',
+      type: 'car' as const
+    }
   ];
 
   const handleFiltersChange = (filters: any) => {

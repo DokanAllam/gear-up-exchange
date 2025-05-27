@@ -52,14 +52,21 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
     }
   };
 
+  // Use proper image URL or fallback
+  const imageUrl = image.startsWith('http') ? image : `https://images.unsplash.com/${image}?w=400&h=300&fit=crop`;
+
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden card-hover group">
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
-          src={image}
+          src={imageUrl}
           alt={title}
           className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=300&fit=crop';
+          }}
         />
         <div className="absolute top-4 left-4">
           <Badge 

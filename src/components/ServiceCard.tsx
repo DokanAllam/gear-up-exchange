@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star, Calendar, DollarSign, Phone } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import WishlistButton from './WishlistButton';
 import ShareButton from './ShareButton';
 
@@ -33,6 +33,12 @@ const ServiceCard = ({
   price,
   availability
 }: ServiceCardProps) => {
+  const navigate = useNavigate();
+
+  const handleBookNow = () => {
+    navigate(`/services/${id}?tab=booking`);
+  };
+
   return (
     <Card className="card-hover bg-white border-0 shadow-lg overflow-hidden">
       <div className="relative">
@@ -83,12 +89,10 @@ const ServiceCard = ({
         </div>
 
         <div className="flex space-x-2">
-          <Link to={`/services/${id}`} className="flex-1">
-            <Button className="w-full btn-primary">
-              <Calendar className="h-4 w-4 mr-2" />
-              Book Now
-            </Button>
-          </Link>
+          <Button onClick={handleBookNow} className="flex-1 btn-primary">
+            <Calendar className="h-4 w-4 mr-2" />
+            Book Now
+          </Button>
           <Button variant="outline" size="icon" className="border-primary text-primary hover:bg-primary hover:text-white">
             <Phone className="h-4 w-4" />
           </Button>

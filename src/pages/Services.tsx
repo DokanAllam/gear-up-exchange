@@ -1,25 +1,32 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import ServiceCard from '@/components/ServiceCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Wrench, Calendar, Star, Gift } from 'lucide-react';
+import { Search, Wrench, Calendar, Gift } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 
 const Services = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [serviceType, setServiceType] = useState('all');
   const [location, setLocation] = useState('all');
+  const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const services = [
     {
       id: '1',
       name: 'AutoCare Pro',
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop',
       location: 'New York, NY',
       rating: 4.8,
       reviewCount: 156,
@@ -31,7 +38,7 @@ const Services = () => {
     {
       id: '2',
       name: 'Quick Fix Motors',
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1632823471565-1ecdf5c0c416?w=400&h=300&fit=crop',
       location: 'Los Angeles, CA',
       rating: 4.6,
       reviewCount: 89,
@@ -43,7 +50,7 @@ const Services = () => {
     {
       id: '3',
       name: 'Bike Service Hub',
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
       location: 'Miami, FL',
       rating: 4.9,
       reviewCount: 203,
@@ -58,26 +65,29 @@ const Services = () => {
     {
       id: '1',
       serviceName: 'AutoCare Pro',
+      serviceId: '1',
       offerTitle: 'First Service Discount',
       description: '20% off your first service appointment',
       validUntil: '2024-02-29',
-      image: '/placeholder.svg'
+      image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop'
     },
     {
       id: '2',
       serviceName: 'Quick Fix Motors',
+      serviceId: '2',
       offerTitle: 'Free Diagnostic',
       description: 'Complimentary diagnostic check with any service',
       validUntil: '2024-02-20',
-      image: '/placeholder.svg'
+      image: 'https://images.unsplash.com/photo-1632823471565-1ecdf5c0c416?w=400&h=300&fit=crop'
     },
     {
       id: '3',
       serviceName: 'Premium Service Center',
+      serviceId: '3',
       offerTitle: 'Express Service',
       description: 'Free pickup and drop-off service within city limits',
       validUntil: '2024-03-10',
-      image: '/placeholder.svg'
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop'
     }
   ];
 
@@ -86,6 +96,10 @@ const Services = () => {
     if (searchQuery && !service.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
+
+  const handleOfferBooking = (serviceId: string) => {
+    navigate(`/services/${serviceId}?tab=booking&offer=true`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -131,7 +145,10 @@ const Services = () => {
                     <p className="text-sm text-green-600 font-medium mb-3">
                       Valid until: {new Date(offer.validUntil).toLocaleDateString()}
                     </p>
-                    <Button className="w-full btn-primary">
+                    <Button 
+                      onClick={() => handleOfferBooking(offer.serviceId)}
+                      className="w-full btn-primary"
+                    >
                       <Calendar className="h-4 w-4 mr-2" />
                       Book Now
                     </Button>
