@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star, Car, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import WishlistButton from './WishlistButton';
+import ShareButton from './ShareButton';
 
 interface DealerCardProps {
   id: string;
@@ -40,10 +42,14 @@ const DealerCard = ({
           className="w-full h-48 object-cover"
         />
         {isPartner && (
-          <Badge className="absolute top-4 right-4 bg-primary text-white">
+          <Badge className="absolute top-4 left-4 bg-primary text-white">
             Partner
           </Badge>
         )}
+        <div className="absolute top-4 right-4 flex space-x-2">
+          <WishlistButton itemId={id} itemType="dealer" />
+          <ShareButton url={`/dealers/${id}`} title={name} />
+        </div>
       </div>
       
       <CardContent className="p-6">

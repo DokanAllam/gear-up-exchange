@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star, Calendar, DollarSign, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import WishlistButton from './WishlistButton';
+import ShareButton from './ShareButton';
 
 interface ServiceCardProps {
   id: string;
@@ -39,9 +41,13 @@ const ServiceCard = ({
           alt={name}
           className="w-full h-48 object-cover"
         />
-        <Badge className="absolute top-4 right-4 bg-green-500 text-white">
+        <Badge className="absolute top-4 left-4 bg-green-500 text-white">
           {availability}
         </Badge>
+        <div className="absolute top-4 right-4 flex space-x-2">
+          <WishlistButton itemId={id} itemType="service" />
+          <ShareButton url={`/services/${id}`} title={name} />
+        </div>
       </div>
       
       <CardContent className="p-6">

@@ -4,6 +4,8 @@ import { Car, Users, MapPin, Star, Calendar, Fuel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
+import WishlistButton from './WishlistButton';
+import ShareButton from './ShareButton';
 
 interface VehicleCardProps {
   id: string;
@@ -67,7 +69,11 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
             {condition.toUpperCase()}
           </Badge>
         </div>
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex space-x-2">
+          <WishlistButton itemId={id} itemType="vehicle" />
+          <ShareButton url={`/vehicles/${id}`} title={title} />
+        </div>
+        <div className="absolute bottom-4 left-4">
           <Badge variant="outline" className="bg-white/90 backdrop-blur-sm">
             <span className="flex items-center space-x-1">
               {getTypeIcon()}
