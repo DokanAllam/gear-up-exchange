@@ -78,7 +78,7 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           
           {/* Dashboard Routes */}
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/dealer-dashboard" element={<DealerDashboard />} />
           <Route path="/service-dashboard" element={<ServiceDashboard />} />
           
