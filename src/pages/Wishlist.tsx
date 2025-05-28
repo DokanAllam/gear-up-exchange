@@ -5,9 +5,10 @@ import Footer from '@/components/Footer';
 import VehicleCard from '@/components/VehicleCard';
 import DealerCard from '@/components/DealerCard';
 import ServiceCard from '@/components/ServiceCard';
+import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, Car, Users, Wrench } from 'lucide-react';
+import { Heart, Car, Users, Wrench, Package } from 'lucide-react';
 
 const Wishlist = () => {
   // Mock wishlist data
@@ -60,6 +61,33 @@ const Wishlist = () => {
     }
   ];
 
+  const wishlistProducts = [
+    {
+      id: '1',
+      name: 'Premium Car Floor Mats',
+      price: 89.99,
+      originalPrice: 119.99,
+      image: '/placeholder.svg',
+      rating: 4.8,
+      reviewCount: 124,
+      category: 'Interior',
+      description: 'High-quality all-weather floor mats designed for maximum protection and style.',
+      inStock: true,
+      isOnSale: true
+    },
+    {
+      id: '2',
+      name: 'LED Headlight Bulbs H7',
+      price: 45.99,
+      image: '/placeholder.svg',
+      rating: 4.7,
+      reviewCount: 89,
+      category: 'Lighting',
+      description: 'Ultra-bright LED headlight bulbs with 6000K white light and long lifespan.',
+      inStock: true
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -72,12 +100,12 @@ const Wishlist = () => {
               My Wishlist
             </h1>
             <p className="text-xl text-gray-600">
-              Your saved vehicles, dealers, and service centers
+              Your saved vehicles, dealers, services, and products
             </p>
           </div>
 
           <Tabs defaultValue="vehicles" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="vehicles" className="flex items-center space-x-2">
                 <Car className="h-4 w-4" />
                 <span>Vehicles ({wishlistVehicles.length})</span>
@@ -89,6 +117,10 @@ const Wishlist = () => {
               <TabsTrigger value="services" className="flex items-center space-x-2">
                 <Wrench className="h-4 w-4" />
                 <span>Services ({wishlistServices.length})</span>
+              </TabsTrigger>
+              <TabsTrigger value="products" className="flex items-center space-x-2">
+                <Package className="h-4 w-4" />
+                <span>Products ({wishlistProducts.length})</span>
               </TabsTrigger>
             </TabsList>
 
@@ -136,6 +168,22 @@ const Wishlist = () => {
                   <h3 className="text-2xl font-bold text-secondary mb-2">No services saved</h3>
                   <p className="text-gray-600 mb-6">Save your favorite service centers</p>
                   <Button className="btn-primary">Browse Services</Button>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="products">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {wishlistProducts.map((product) => (
+                  <ProductCard key={product.id} {...product} />
+                ))}
+              </div>
+              {wishlistProducts.length === 0 && (
+                <div className="text-center py-16">
+                  <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold text-secondary mb-2">No products saved</h3>
+                  <p className="text-gray-600 mb-6">Save your favorite products</p>
+                  <Button className="btn-primary">Browse Products</Button>
                 </div>
               )}
             </TabsContent>

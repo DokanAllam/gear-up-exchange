@@ -12,6 +12,9 @@ import Dealers from "./pages/Dealers";
 import DealerDetail from "./pages/DealerDetail";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
+import Store from "./pages/Store";
+import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
 import Sell from "./pages/Sell";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -69,6 +72,11 @@ const App = () => (
           {/* Service Routes */}
           <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
+          
+          {/* Store Routes */}
+          <Route path="/store" element={<Store />} />
+          <Route path="/store/product/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
           
           {/* User Routes */}
           <Route path="/sell" element={<Sell />} />

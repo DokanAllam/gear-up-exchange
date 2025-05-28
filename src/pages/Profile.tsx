@@ -1,127 +1,155 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { 
   User, 
   Car, 
-  Calendar, 
-  Star, 
-  Edit, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Eye,
+  Settings, 
+  Calendar,
+  MapPin,
+  Star,
+  Edit,
+  Save,
   X,
-  DollarSign
+  Package,
+  Clock,
+  CheckCircle,
+  Truck
 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedListing, setSelectedListing] = useState<any>(null);
-  const [selectedBooking, setSelectedBooking] = useState<any>(null);
-  const navigate = useNavigate();
-  
+  const { toast } = useToast();
+
+  // Mock user data
   const [userInfo, setUserInfo] = useState({
     name: 'John Doe',
     email: 'john.doe@example.com',
     phone: '+1 (555) 123-4567',
     location: 'New York, NY',
-    joinDate: 'January 2024'
+    memberSince: '2023',
+    totalPurchases: 3
   });
 
-  const listings = [
+  // Mock orders data
+  const orders = [
     {
-      id: '1',
-      title: '2023 BMW M3 Competition',
-      price: 75000,
-      status: 'active',
-      views: 245,
+      id: 'ORD-001',
       date: '2024-01-15',
-      image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop',
-      description: 'Excellent condition BMW M3 Competition with low mileage',
-      year: 2023,
-      mileage: '5,000 km',
-      fuelType: 'Petrol'
+      status: 'delivered',
+      total: 89.99,
+      items: [
+        {
+          name: 'Premium Car Floor Mats',
+          price: 89.99,
+          quantity: 1,
+          image: '/placeholder.svg'
+        }
+      ]
     },
     {
-      id: '2',
-      title: '2022 Audi A4',
-      price: 45000,
-      status: 'sold',
-      views: 189,
+      id: 'ORD-002',
       date: '2024-01-10',
-      image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop',
-      description: 'Well-maintained Audi A4 with premium features',
-      year: 2022,
-      mileage: '15,000 km',
-      fuelType: 'Petrol'
+      status: 'shipped',
+      total: 135.98,
+      items: [
+        {
+          name: 'LED Headlight Bulbs H7',
+          price: 45.99,
+          quantity: 2,
+          image: '/placeholder.svg'
+        },
+        {
+          name: 'Car Phone Mount',
+          price: 24.99,
+          quantity: 1,
+          image: '/placeholder.svg'
+        }
+      ]
+    },
+    {
+      id: 'ORD-003',
+      date: '2024-01-05',
+      status: 'processing',
+      total: 78.99,
+      items: [
+        {
+          name: 'Brake Pads Set',
+          price: 78.99,
+          quantity: 1,
+          image: '/placeholder.svg'
+        }
+      ]
     }
   ];
 
-  const bookings = [
+  // Mock vehicle listings data
+  const vehicleListings = [
+    {
+      id: '1',
+      title: '2019 Honda Civic',
+      price: 18500,
+      image: '/placeholder.svg',
+      status: 'active',
+      views: 234,
+      inquiries: 12,
+      datePosted: '2024-01-10'
+    }
+  ];
+
+  // Mock service bookings data
+  const serviceBookings = [
     {
       id: '1',
       serviceName: 'AutoCare Pro',
-      service: 'Oil Change',
+      serviceType: 'Oil Change',
       date: '2024-01-20',
-      time: '2:00 PM',
-      status: 'completed',
-      price: 75,
-      serviceId: '1',
-      address: '123 Main St, New York, NY',
-      phone: '+1 (555) 123-4567',
-      notes: 'Regular oil change service completed successfully'
-    },
-    {
-      id: '2',
-      serviceName: 'Quick Fix Motors',
-      service: 'Brake Service',
-      date: '2024-01-25',
       time: '10:00 AM',
-      status: 'upcoming',
-      price: 150,
-      serviceId: '2',
-      address: '456 Oak Ave, New York, NY',
-      phone: '+1 (555) 987-6543',
-      notes: 'Brake inspection and possible replacement'
+      status: 'confirmed',
+      price: 75,
+      location: 'New York, NY'
     }
   ];
 
-  const reviews = [
-    {
-      id: '1',
-      type: 'received',
-      from: 'Mike Johnson',
-      rating: 5,
-      comment: 'Great seller, honest description and smooth transaction!',
-      date: '2024-01-18'
-    },
-    {
-      id: '2',
-      type: 'given',
-      to: 'AutoCare Pro',
-      rating: 4,
-      comment: 'Good service, professional staff.',
-      date: '2024-01-20'
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'delivered':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'shipped':
+        return <Truck className="h-4 w-4 text-blue-500" />;
+      case 'processing':
+        return <Clock className="h-4 w-4 text-yellow-500" />;
+      default:
+        return <Package className="h-4 w-4 text-gray-500" />;
     }
-  ];
-
-  const handleEditListing = (listingId: string) => {
-    navigate(`/sell?edit=${listingId}`);
   };
 
-  const handleCancelBooking = (bookingId: string) => {
-    console.log('Cancelling booking:', bookingId);
-    // In a real app, this would make an API call
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'shipped':
+        return 'bg-blue-100 text-blue-800';
+      case 'processing':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleSaveProfile = () => {
+    setIsEditing(false);
+    toast({
+      title: "Profile updated",
+      description: "Your profile has been updated successfully.",
+    });
   };
 
   return (
@@ -129,425 +157,320 @@ const Profile = () => {
       <Header />
       
       <main className="section-padding">
-        <div className="container-custom max-w-6xl mx-auto">
+        <div className="container-custom">
           {/* Profile Header */}
-          <Card className="mb-8 shadow-lg border-0 animate-fade-in">
-            <CardContent className="p-8">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage src="/placeholder.svg" alt={userInfo.name} />
-                  <AvatarFallback className="text-2xl bg-primary text-white">
-                    {userInfo.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1">
-                  {isEditing ? (
-                    <div className="space-y-4">
-                      <Input
-                        value={userInfo.name}
-                        onChange={(e) => setUserInfo(prev => ({ ...prev, name: e.target.value }))}
-                        className="text-xl font-bold"
-                      />
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input
-                          value={userInfo.email}
-                          onChange={(e) => setUserInfo(prev => ({ ...prev, email: e.target.value }))}
-                        />
-                        <Input
-                          value={userInfo.phone}
-                          onChange={(e) => setUserInfo(prev => ({ ...prev, phone: e.target.value }))}
-                        />
-                      </div>
-                      <Input
-                        value={userInfo.location}
-                        onChange={(e) => setUserInfo(prev => ({ ...prev, location: e.target.value }))}
-                      />
-                    </div>
-                  ) : (
-                    <div>
-                      <h1 className="text-3xl font-bold text-secondary mb-2">{userInfo.name}</h1>
-                      <div className="space-y-2 text-gray-600">
-                        <div className="flex items-center">
-                          <Mail className="h-4 w-4 mr-2" />
-                          <span>{userInfo.email}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Phone className="h-4 w-4 mr-2" />
-                          <span>{userInfo.phone}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-2" />
-                          <span>{userInfo.location}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <User className="h-4 w-4 mr-2" />
-                          <span>Member since {userInfo.joinDate}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+          <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-6">
+                <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center">
+                  <User className="h-10 w-10 text-white" />
                 </div>
-                
-                <div className="flex gap-2">
-                  {isEditing ? (
-                    <>
-                      <Button 
-                        onClick={() => setIsEditing(false)}
-                        className="btn-primary"
-                      >
-                        Save
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        onClick={() => setIsEditing(false)}
-                      >
-                        Cancel
-                      </Button>
-                    </>
-                  ) : (
-                    <Button 
-                      onClick={() => setIsEditing(true)}
-                      className="btn-primary"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit Profile
-                    </Button>
-                  )}
+                <div>
+                  <h1 className="text-3xl font-bold text-secondary">{userInfo.name}</h1>
+                  <p className="text-gray-600 flex items-center mt-1">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    {userInfo.location}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Member since {userInfo.memberSince}
+                  </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+              <Button
+                variant="outline"
+                onClick={() => setIsEditing(!isEditing)}
+                className="flex items-center space-x-2"
+              >
+                <Edit className="h-4 w-4" />
+                <span>Edit Profile</span>
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Car className="h-8 w-8 text-primary" />
+                <div>
+                  <div className="text-2xl font-bold text-secondary">{vehicleListings.length}</div>
+                  <div className="text-sm text-gray-600">Active Listings</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Calendar className="h-8 w-8 text-primary" />
+                <div>
+                  <div className="text-2xl font-bold text-secondary">{serviceBookings.length}</div>
+                  <div className="text-sm text-gray-600">Service Bookings</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Package className="h-8 w-8 text-primary" />
+                <div>
+                  <div className="text-2xl font-bold text-secondary">{orders.length}</div>
+                  <div className="text-sm text-gray-600">Total Orders</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Profile Content */}
-          <Tabs defaultValue="listings" className="animate-scale-in">
-            <TabsList className="grid w-full grid-cols-4 lg:w-fit">
-              <TabsTrigger value="listings">My Listings</TabsTrigger>
+          <Tabs defaultValue="personal" className="w-full">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
+              <TabsTrigger value="personal">Personal Info</TabsTrigger>
+              <TabsTrigger value="vehicles">My Vehicles</TabsTrigger>
               <TabsTrigger value="bookings">Service Bookings</TabsTrigger>
-              <TabsTrigger value="reviews">Reviews</TabsTrigger>
+              <TabsTrigger value="orders">My Orders</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
 
-            {/* My Listings */}
-            <TabsContent value="listings" className="mt-6">
-              <Card className="shadow-lg border-0">
+            {/* Personal Information */}
+            <TabsContent value="personal">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Car className="h-5 w-5" />
-                    My Vehicle Listings
-                  </CardTitle>
+                  <CardTitle>Personal Information</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {listings.map((listing) => (
-                      <div key={listing.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center space-x-4">
-                          <img 
-                            src={listing.image} 
-                            alt={listing.title}
-                            className="w-16 h-12 object-cover rounded"
+                <CardContent className="space-y-6">
+                  {isEditing ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Full Name</Label>
+                          <Input
+                            id="name"
+                            value={userInfo.name}
+                            onChange={(e) => setUserInfo({...userInfo, name: e.target.value})}
                           />
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-secondary">{listing.title}</h3>
-                            <p className="text-gray-600">${listing.price.toLocaleString()}</p>
-                            <p className="text-sm text-gray-500">Listed on {listing.date}</p>
-                          </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-center">
-                            <p className="font-semibold flex items-center">
-                              <Eye className="h-4 w-4 mr-1" />
-                              {listing.views}
-                            </p>
-                            <p className="text-sm text-gray-500">Views</p>
-                          </div>
-                          <Badge variant={listing.status === 'active' ? 'default' : 'secondary'}>
-                            {listing.status}
-                          </Badge>
-                          <div className="flex gap-2">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => setSelectedListing(listing)}
-                                >
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  View
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-2xl">
-                                <DialogHeader>
-                                  <DialogTitle>{selectedListing?.title}</DialogTitle>
-                                </DialogHeader>
-                                {selectedListing && (
-                                  <div className="space-y-4">
-                                    <img 
-                                      src={selectedListing.image} 
-                                      alt={selectedListing.title}
-                                      className="w-full h-64 object-cover rounded-lg"
-                                    />
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Price</p>
-                                        <p className="text-xl font-bold text-green-600">
-                                          ${selectedListing.price.toLocaleString()}
-                                        </p>
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Status</p>
-                                        <Badge variant={selectedListing.status === 'active' ? 'default' : 'secondary'}>
-                                          {selectedListing.status}
-                                        </Badge>
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Year</p>
-                                        <p>{selectedListing.year}</p>
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Mileage</p>
-                                        <p>{selectedListing.mileage}</p>
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <p className="text-sm font-medium text-gray-500 mb-2">Description</p>
-                                      <p className="text-gray-700">{selectedListing.description}</p>
-                                    </div>
-                                  </div>
-                                )}
-                              </DialogContent>
-                            </Dialog>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleEditListing(listing.id)}
-                            >
-                              <Edit className="h-4 w-4 mr-1" />
-                              Edit
-                            </Button>
-                          </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={userInfo.email}
+                            onChange={(e) => setUserInfo({...userInfo, email: e.target.value})}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Phone</Label>
+                          <Input
+                            id="phone"
+                            value={userInfo.phone}
+                            onChange={(e) => setUserInfo({...userInfo, phone: e.target.value})}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="location">Location</Label>
+                          <Input
+                            id="location"
+                            value={userInfo.location}
+                            onChange={(e) => setUserInfo({...userInfo, location: e.target.value})}
+                          />
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      <div className="flex space-x-4">
+                        <Button onClick={handleSaveProfile} className="btn-primary">
+                          <Save className="h-4 w-4 mr-2" />
+                          Save Changes
+                        </Button>
+                        <Button variant="outline" onClick={() => setIsEditing(false)}>
+                          <X className="h-4 w-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <Label className="text-gray-600">Full Name</Label>
+                        <p className="text-lg font-medium">{userInfo.name}</p>
+                      </div>
+                      <div>
+                        <Label className="text-gray-600">Email</Label>
+                        <p className="text-lg font-medium">{userInfo.email}</p>
+                      </div>
+                      <div>
+                        <Label className="text-gray-600">Phone</Label>
+                        <p className="text-lg font-medium">{userInfo.phone}</p>
+                      </div>
+                      <div>
+                        <Label className="text-gray-600">Location</Label>
+                        <p className="text-lg font-medium">{userInfo.location}</p>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* My Vehicles */}
+            <TabsContent value="vehicles">
+              <div className="space-y-6">
+                {vehicleListings.map((vehicle) => (
+                  <Card key={vehicle.id}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">{vehicle.title}</CardTitle>
+                        <Badge variant="outline">{vehicle.status}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label className="text-gray-600">Price</Label>
+                          <p className="text-lg font-medium">${vehicle.price}</p>
+                        </div>
+                        <div>
+                          <Label className="text-gray-600">Views</Label>
+                          <p className="text-lg font-medium">{vehicle.views}</p>
+                        </div>
+                        <div>
+                          <Label className="text-gray-600">Inquiries</Label>
+                          <p className="text-lg font-medium">{vehicle.inquiries}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {vehicleListings.length === 0 && (
+                  <div className="text-center py-16">
+                    <Car className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold text-secondary mb-2">No vehicle listings yet</h3>
+                    <p className="text-gray-600 mb-6">List your vehicle for sale to reach potential buyers</p>
+                    <Button className="btn-primary">List a Vehicle</Button>
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
             {/* Service Bookings */}
-            <TabsContent value="bookings" className="mt-6">
-              <Card className="shadow-lg border-0">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    Service Bookings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {bookings.map((booking) => (
-                      <div key={booking.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-secondary">{booking.serviceName}</h3>
-                          <p className="text-gray-600">{booking.service}</p>
-                          <p className="text-sm text-gray-500">
-                            {booking.date} at {booking.time}
+            <TabsContent value="bookings">
+              <div className="space-y-6">
+                {serviceBookings.map((booking) => (
+                  <Card key={booking.id}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">{booking.serviceName}</CardTitle>
+                        <Badge variant="outline">{booking.status}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-gray-600">Service Type</Label>
+                          <p className="text-lg font-medium">{booking.serviceType}</p>
+                        </div>
+                        <div>
+                          <Label className="text-gray-600">Date & Time</Label>
+                          <p className="text-lg font-medium">
+                            {new Date(booking.date).toLocaleDateString()} - {booking.time}
                           </p>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-center">
-                            <p className="font-semibold flex items-center">
-                              <DollarSign className="h-4 w-4" />
-                              {booking.price}
-                            </p>
-                          </div>
-                          <Badge variant={booking.status === 'completed' ? 'secondary' : 'default'}>
-                            {booking.status}
-                          </Badge>
-                          <div className="flex gap-2">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => setSelectedBooking(booking)}
-                                >
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  View
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent>
-                                <DialogHeader>
-                                  <DialogTitle>Booking Details</DialogTitle>
-                                </DialogHeader>
-                                {selectedBooking && (
-                                  <div className="space-y-4">
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Service Center</p>
-                                        <p className="font-semibold">{selectedBooking.serviceName}</p>
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Service</p>
-                                        <p>{selectedBooking.service}</p>
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Date & Time</p>
-                                        <p>{selectedBooking.date} at {selectedBooking.time}</p>
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-500">Price</p>
-                                        <p className="font-semibold text-green-600">${selectedBooking.price}</p>
-                                      </div>
-                                      <div className="col-span-2">
-                                        <p className="text-sm font-medium text-gray-500">Address</p>
-                                        <p>{selectedBooking.address}</p>
-                                      </div>
-                                      <div className="col-span-2">
-                                        <p className="text-sm font-medium text-gray-500">Phone</p>
-                                        <p>{selectedBooking.phone}</p>
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <p className="text-sm font-medium text-gray-500 mb-2">Notes</p>
-                                      <p className="text-gray-700">{selectedBooking.notes}</p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                      <Badge variant={selectedBooking.status === 'completed' ? 'secondary' : 'default'}>
-                                        {selectedBooking.status}
-                                      </Badge>
-                                      {selectedBooking.status === 'upcoming' && (
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          className="text-red-600 hover:bg-red-50"
-                                          onClick={() => handleCancelBooking(selectedBooking.id)}
-                                        >
-                                          <X className="h-4 w-4 mr-1" />
-                                          Cancel Booking
-                                        </Button>
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                              </DialogContent>
-                            </Dialog>
-                          </div>
+                        <div>
+                          <Label className="text-gray-600">Location</Label>
+                          <p className="text-lg font-medium">{booking.location}</p>
+                        </div>
+                        <div>
+                          <Label className="text-gray-600">Price</Label>
+                          <p className="text-lg font-medium">${booking.price}</p>
                         </div>
                       </div>
-                    ))}
+                    </CardContent>
+                  </Card>
+                ))}
+                {serviceBookings.length === 0 && (
+                  <div className="text-center py-16">
+                    <Settings className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold text-secondary mb-2">No service bookings yet</h3>
+                    <p className="text-gray-600 mb-6">Book a service for your vehicle</p>
+                    <Button className="btn-primary">Book a Service</Button>
                   </div>
-                </CardContent>
-              </Card>
+                )}
+              </div>
             </TabsContent>
 
-            {/* Reviews */}
-            <TabsContent value="reviews" className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="shadow-lg border-0">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Star className="h-5 w-5" />
-                      Reviews Received
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {reviews.filter(r => r.type === 'received').map((review) => (
-                        <div key={review.id} className="p-4 border rounded-lg">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="flex">
-                              {[...Array(review.rating)].map((_, i) => (
-                                <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                              ))}
-                            </div>
-                            <span className="font-semibold">{review.from}</span>
-                          </div>
-                          <p className="text-gray-600">{review.comment}</p>
-                          <p className="text-sm text-gray-500 mt-2">{review.date}</p>
+            {/* My Orders */}
+            <TabsContent value="orders">
+              <div className="space-y-6">
+                {orders.map((order) => (
+                  <Card key={order.id}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-lg">Order #{order.id}</CardTitle>
+                          <p className="text-gray-600">Placed on {new Date(order.date).toLocaleDateString()}</p>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-lg border-0">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Star className="h-5 w-5" />
-                      Reviews Given
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {reviews.filter(r => r.type === 'given').map((review) => (
-                        <div key={review.id} className="p-4 border rounded-lg">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="flex">
-                              {[...Array(review.rating)].map((_, i) => (
-                                <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                              ))}
-                            </div>
-                            <span className="font-semibold">{review.to}</span>
+                        <div className="text-right">
+                          <div className="flex items-center space-x-2 mb-2">
+                            {getStatusIcon(order.status)}
+                            <Badge className={getStatusColor(order.status)}>
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </Badge>
                           </div>
-                          <p className="text-gray-600">{review.comment}</p>
-                          <p className="text-sm text-gray-500 mt-2">{review.date}</p>
+                          <p className="text-xl font-bold text-primary">${order.total}</p>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {order.items.map((item, index) => (
+                          <div key={index} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-16 h-16 object-cover rounded-lg"
+                            />
+                            <div className="flex-1">
+                              <h4 className="font-medium">{item.name}</h4>
+                              <p className="text-gray-600">Quantity: {item.quantity}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold">${item.price}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="flex justify-between items-center mt-4 pt-4 border-t">
+                        <div className="flex space-x-4">
+                          {order.status === 'delivered' && (
+                            <Button variant="outline" size="sm">
+                              Leave Review
+                            </Button>
+                          )}
+                          <Button variant="outline" size="sm">
+                            View Details
+                          </Button>
+                        </div>
+                        {order.status !== 'delivered' && (
+                          <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50">
+                            Cancel Order
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                
+                {orders.length === 0 && (
+                  <div className="text-center py-16">
+                    <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold text-secondary mb-2">No orders yet</h3>
+                    <p className="text-gray-600 mb-6">Start shopping to see your orders here</p>
+                    <Button className="btn-primary">Browse Store</Button>
+                  </div>
+                )}
               </div>
             </TabsContent>
 
             {/* Settings */}
-            <TabsContent value="settings" className="mt-6">
-              <Card className="shadow-lg border-0">
+            <TabsContent value="settings">
+              <Card>
                 <CardHeader>
                   <CardTitle>Account Settings</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Notification Preferences</h3>
-                      <div className="space-y-3">
-                        <label className="flex items-center">
-                          <input type="checkbox" className="mr-3" defaultChecked />
-                          Email notifications for new messages
-                        </label>
-                        <label className="flex items-center">
-                          <input type="checkbox" className="mr-3" defaultChecked />
-                          SMS notifications for bookings
-                        </label>
-                        <label className="flex items-center">
-                          <input type="checkbox" className="mr-3" />
-                          Marketing emails
-                        </label>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Privacy Settings</h3>
-                      <div className="space-y-3">
-                        <label className="flex items-center">
-                          <input type="checkbox" className="mr-3" defaultChecked />
-                          Show profile to other users
-                        </label>
-                        <label className="flex items-center">
-                          <input type="checkbox" className="mr-3" defaultChecked />
-                          Allow contact from buyers
-                        </label>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t">
-                      <Button className="btn-primary mr-4">
-                        Save Settings
-                      </Button>
-                      <Button variant="outline" className="text-red-600 border-red-600 hover:bg-red-50">
-                        Delete Account
-                      </Button>
-                    </div>
+                <CardContent className="space-y-6">
+                  <div className="text-center py-8">
+                    <Settings className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Settings</h3>
+                    <p className="text-gray-600">Account settings coming soon...</p>
                   </div>
                 </CardContent>
               </Card>

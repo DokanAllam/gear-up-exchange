@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Car, User, Users, Menu, X, Heart, Bell } from 'lucide-react';
+import { Car, User, Users, Menu, X, Heart, Bell, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -12,11 +12,13 @@ const Header = () => {
   // Mock authentication state - in real app this would come from auth context
   const isAuthenticated = true; // Mock value
   const notificationCount = 3; // Mock notification count
+  const cartItemCount = 2; // Mock cart count
 
   const navItems = [
     { label: 'Buy Vehicles', href: '/vehicles', icon: Car },
     { label: 'Dealers', href: '/dealers', icon: Users },
     { label: 'Services', href: '/services', icon: User },
+    { label: 'Store', href: '/store', icon: ShoppingBag },
     { label: 'Sell Your Vehicle', href: '/sell', icon: Car },
   ];
 
@@ -68,6 +70,16 @@ const Header = () => {
                     {notificationCount > 0 && (
                       <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-red-500 text-white text-xs">
                         {notificationCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
+                <Link to="/cart">
+                  <Button variant="outline" size="icon" className="border-green-200 text-green-600 hover:bg-green-50 relative">
+                    <ShoppingBag className="h-4 w-4" />
+                    {cartItemCount > 0 && (
+                      <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-green-500 text-white text-xs">
+                        {cartItemCount}
                       </Badge>
                     )}
                   </Button>
@@ -136,6 +148,17 @@ const Header = () => {
                         {notificationCount > 0 && (
                           <Badge className="ml-2 bg-red-500 text-white">
                             {notificationCount}
+                          </Badge>
+                        )}
+                      </Button>
+                    </Link>
+                    <Link to="/cart" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full border-green-200 text-green-600 hover:bg-green-50">
+                        <ShoppingBag className="h-4 w-4 mr-2" />
+                        Cart
+                        {cartItemCount > 0 && (
+                          <Badge className="ml-2 bg-green-500 text-white">
+                            {cartItemCount}
                           </Badge>
                         )}
                       </Button>

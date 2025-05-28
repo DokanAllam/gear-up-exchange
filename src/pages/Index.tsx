@@ -6,6 +6,7 @@ import FeaturedSection from '@/components/FeaturedSection';
 import TopDealers from '@/components/TopDealers';
 import TopServiceCenters from '@/components/TopServiceCenters';
 import ServicesSection from '@/components/ServicesSection';
+import ProductsSection from '@/components/ProductsSection';
 import DownloadApp from '@/components/DownloadApp';
 import CommunitySection from '@/components/CommunitySection';
 import Footer from '@/components/Footer';
@@ -20,6 +21,7 @@ const Index = () => {
         <TopDealers />
         <TopServiceCenters />
         <ServicesSection />
+        <ProductsSection />
         <DownloadApp />
         <CommunitySection />
       </main>
