@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { 
   User, 
@@ -29,6 +30,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -36,8 +38,11 @@ const Profile = () => {
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
   const [reviewText, setReviewText] = useState('');
   const [reviewRating, setReviewRating] = useState(5);
+  const [rescheduleDate, setRescheduleDate] = useState('');
+  const [rescheduleTime, setRescheduleTime] = useState('');
   const { toast } = useToast();
 
   // Mock user data
@@ -207,8 +212,8 @@ const Profile = () => {
   };
 
   const handleVehicleClick = (vehicle) => {
-    setSelectedVehicle(vehicle);
-    setIsVehicleModalOpen(true);
+    // Navigate to vehicle edit page
+    navigate(`/edit-vehicle/${vehicle.id}`);
   };
 
   const handleBookingClick = (booking) => {
@@ -245,6 +250,25 @@ const Profile = () => {
     setIsOrderModalOpen(false);
     setReviewText('');
     setReviewRating(5);
+  };
+
+  const handleReschedule = () => {
+    if (rescheduleDate && rescheduleTime) {
+      toast({
+        title: "Booking rescheduled",
+        description: `Your booking has been rescheduled to ${rescheduleDate} at ${rescheduleTime}`,
+      });
+      setIsRescheduleModalOpen(false);
+      setIsBookingModalOpen(false);
+      setRescheduleDate('');
+      setRescheduleTime('');
+    } else {
+      toast({
+        title: "Error",
+        description: "Please select both date and time",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -435,14 +459,6 @@ const Profile = () => {
                     </CardContent>
                   </Card>
                 ))}
-                {vehicleListings.length === 0 && (
-                  <div className="text-center py-16">
-                    <Car className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-secondary mb-2">No vehicle listings yet</h3>
-                    <p className="text-gray-600 mb-6">List your vehicle for sale to reach potential buyers</p>
-                    <Button className="btn-primary">List a Vehicle</Button>
-                  </div>
-                )}
               </div>
             </TabsContent>
 
@@ -487,14 +503,6 @@ const Profile = () => {
                     </CardContent>
                   </Card>
                 ))}
-                {serviceBookings.length === 0 && (
-                  <div className="text-center py-16">
-                    <Settings className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-secondary mb-2">No service bookings yet</h3>
-                    <p className="text-gray-600 mb-6">Book a service for your vehicle</p>
-                    <Button className="btn-primary">Book a Service</Button>
-                  </div>
-                )}
               </div>
             </TabsContent>
 
@@ -573,19 +581,9 @@ const Profile = () => {
                     </CardContent>
                   </Card>
                 ))}
-                
-                {orders.length === 0 && (
-                  <div className="text-center py-16">
-                    <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-secondary mb-2">No orders yet</h3>
-                    <p className="text-gray-600 mb-6">Start shopping to see your orders here</p>
-                    <Button className="btn-primary">Browse Store</Button>
-                  </div>
-                )}
               </div>
             </TabsContent>
 
-            {/* Settings */}
             <TabsContent value="settings">
               <Card>
                 <CardHeader>
@@ -603,68 +601,6 @@ const Profile = () => {
           </Tabs>
         </div>
       </main>
-
-      {/* Vehicle Edit Modal */}
-      <Dialog open={isVehicleModalOpen} onOpenChange={setIsVehicleModalOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Vehicle Details - {selectedVehicle?.title}</DialogTitle>
-          </DialogHeader>
-          {selectedVehicle && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Status</Label>
-                  <Badge className={getStatusColor(selectedVehicle.status)}>
-                    {selectedVehicle.status}
-                  </Badge>
-                </div>
-                <div>
-                  <Label>Price</Label>
-                  <p className="font-medium">${selectedVehicle.price}</p>
-                </div>
-                <div>
-                  <Label>Year</Label>
-                  <p className="font-medium">{selectedVehicle.year}</p>
-                </div>
-                <div>
-                  <Label>Mileage</Label>
-                  <p className="font-medium">{selectedVehicle.mileage} miles</p>
-                </div>
-              </div>
-              
-              <div>
-                <Label>Description</Label>
-                <Textarea 
-                  value={selectedVehicle.description}
-                  readOnly
-                  className="bg-gray-50"
-                />
-              </div>
-
-              {selectedVehicle.status === 'rejected' && selectedVehicle.rejectionReason && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <AlertCircle className="h-5 w-5 text-red-500" />
-                    <h4 className="font-medium text-red-800">Rejection Reason</h4>
-                  </div>
-                  <p className="text-red-700">{selectedVehicle.rejectionReason}</p>
-                </div>
-              )}
-
-              <div className="flex justify-end space-x-4">
-                <Button variant="outline" onClick={() => setIsVehicleModalOpen(false)}>
-                  Close
-                </Button>
-                <Button className="btn-primary">
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Listing
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
 
       {/* Service Booking Details Modal */}
       <Dialog open={isBookingModalOpen} onOpenChange={setIsBookingModalOpen}>
@@ -714,7 +650,10 @@ const Profile = () => {
                   Close
                 </Button>
                 <div className="space-x-4">
-                  <Button variant="outline">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsRescheduleModalOpen(true)}
+                  >
                     <Edit className="h-4 w-4 mr-2" />
                     Reschedule
                   </Button>
@@ -729,6 +668,43 @@ const Profile = () => {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Reschedule Modal */}
+      <Dialog open={isRescheduleModalOpen} onOpenChange={setIsRescheduleModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reschedule Booking</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="reschedule-date">New Date</Label>
+              <Input
+                id="reschedule-date"
+                type="date"
+                value={rescheduleDate}
+                onChange={(e) => setRescheduleDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="reschedule-time">New Time</Label>
+              <Input
+                id="reschedule-time"
+                type="time"
+                value={rescheduleTime}
+                onChange={(e) => setRescheduleTime(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-end space-x-4">
+              <Button variant="outline" onClick={() => setIsRescheduleModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleReschedule} className="btn-primary">
+                Confirm Reschedule
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 

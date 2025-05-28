@@ -21,6 +21,7 @@ import Sell from "./pages/Sell";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import EditVehicle from "./pages/EditVehicle";
 import Wishlist from "./pages/Wishlist";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
@@ -67,6 +68,7 @@ const App = () => (
             {/* Vehicle Routes */}
             <Route path="/vehicles" element={<Vehicles />} />
             <Route path="/vehicles/:id" element={<VehicleDetail />} />
+            <Route path="/edit-vehicle/:id" element={<EditVehicle />} />
             
             {/* Dealer Routes */}
             <Route path="/dealers" element={<Dealers />} />
