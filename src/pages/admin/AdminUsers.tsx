@@ -2,15 +2,21 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  Users, 
+  Search, 
+  Plus, 
+  MoreHorizontal,
+  Mail,
+  Phone,
+  Calendar,
+  Ban,
+  UserCheck
+} from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,232 +25,233 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { 
-  Search, 
-  Filter, 
-  Download, 
-  MoreHorizontal, 
-  Eye, 
-  Edit, 
-  Ban, 
-  UserPlus,
-  Mail,
-  Phone,
-  Calendar
-} from 'lucide-react';
 
 const AdminUsers = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-
+  
   const users = [
     {
       id: '1',
-      name: 'John Smith',
-      email: 'john@example.com',
-      phone: '+1 234 567 8900',
-      type: 'Buyer',
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '+1 (555) 123-4567',
+      role: 'User',
       status: 'active',
       joinDate: '2024-01-15',
-      lastLogin: '2024-01-20',
-      avatar: 'https://api.dicebear.com/7.x/avatars/svg?seed=John'
+      lastActive: '2024-01-25',
+      avatar: '/placeholder.svg'
     },
     {
       id: '2',
-      name: 'Sarah Johnson',
-      email: 'sarah@example.com',
-      phone: '+1 234 567 8901',
-      type: 'Seller',
+      name: 'Jane Smith',
+      email: 'jane.smith@example.com',
+      phone: '+1 (555) 987-6543',
+      role: 'Dealer',
       status: 'active',
-      joinDate: '2024-01-14',
-      lastLogin: '2024-01-19',
-      avatar: 'https://api.dicebear.com/7.x/avatars/svg?seed=Sarah'
+      joinDate: '2024-01-10',
+      lastActive: '2024-01-24',
+      avatar: '/placeholder.svg'
     },
     {
       id: '3',
-      name: 'AutoMax Dealers',
-      email: 'info@automax.com',
-      phone: '+1 234 567 8902',
-      type: 'Dealer',
-      status: 'pending',
-      joinDate: '2024-01-10',
-      lastLogin: '2024-01-18',
-      avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AutoMax'
-    },
+      name: 'Mike Johnson',
+      email: 'mike.johnson@example.com',
+      phone: '+1 (555) 456-7890',
+      role: 'Service Provider',
+      status: 'suspended',
+      joinDate: '2024-01-05',
+      lastActive: '2024-01-20',
+      avatar: '/placeholder.svg'
+    }
   ];
 
   const handleUserAction = (userId: string, action: string) => {
-    console.log(`Performing ${action} on user ${userId}`);
+    console.log(`${action} user:`, userId);
   };
 
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      active: 'default',
-      pending: 'secondary',
-      suspended: 'destructive',
-      inactive: 'outline'
-    };
-    return <Badge variant={variants[status as keyof typeof variants] || 'outline'}>{status}</Badge>;
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'default';
+      case 'suspended':
+        return 'destructive';
+      case 'pending':
+        return 'secondary';
+      default:
+        return 'outline';
+    }
   };
 
-  const getTypeBadge = (type: string) => {
-    const colors = {
-      Buyer: 'bg-blue-100 text-blue-800',
-      Seller: 'bg-green-100 text-green-800',
-      Dealer: 'bg-purple-100 text-purple-800',
-      Service: 'bg-orange-100 text-orange-800'
-    };
-    return <Badge className={colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800'}>{type}</Badge>;
-  };
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
-          <p className="text-muted-foreground">Manage all users, dealers, and service centers</p>
+          <h1 className="text-3xl font-bold text-secondary">User Management</h1>
+          <p className="text-gray-600">Manage users, dealers, and service providers</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90">
-          <UserPlus className="h-4 w-4 mr-2" />
+        <Button className="btn-primary">
+          <Plus className="h-4 w-4 mr-2" />
           Add User
         </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-2">
+              <Users className="h-8 w-8 text-blue-600" />
+              <div>
+                <p className="text-2xl font-bold">1,247</p>
+                <p className="text-sm text-gray-600">Total Users</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-2">
+              <UserCheck className="h-8 w-8 text-green-600" />
+              <div>
+                <p className="text-2xl font-bold">1,156</p>
+                <p className="text-sm text-gray-600">Active Users</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-2">
+              <Ban className="h-8 w-8 text-red-600" />
+              <div>
+                <p className="text-2xl font-bold">91</p>
+                <p className="text-sm text-gray-600">Suspended</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-8 w-8 text-purple-600" />
+              <div>
+                <p className="text-2xl font-bold">234</p>
+                <p className="text-sm text-gray-600">New This Month</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>All Users</CardTitle>
+            <CardTitle>Users</CardTitle>
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search users..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-64"
+                />
+              </div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search users..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="suspended">Suspended</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="buyer">Buyer</SelectItem>
-                <SelectItem value="seller">Seller</SelectItem>
-                <SelectItem value="dealer">Dealer</SelectItem>
-                <SelectItem value="service">Service</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
-          </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Join Date</TableHead>
-                <TableHead>Last Login</TableHead>
-                <TableHead className="w-[50px]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList>
+              <TabsTrigger value="all">All Users</TabsTrigger>
+              <TabsTrigger value="active">Active</TabsTrigger>
+              <TabsTrigger value="suspended">Suspended</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="all" className="space-y-4">
+              <div className="rounded-md border">
+                <div className="grid grid-cols-12 gap-4 p-4 font-medium border-b bg-gray-50">
+                  <div className="col-span-3">User</div>
+                  <div className="col-span-2">Role</div>
+                  <div className="col-span-2">Status</div>
+                  <div className="col-span-2">Join Date</div>
+                  <div className="col-span-2">Last Active</div>
+                  <div className="col-span-1">Actions</div>
+                </div>
+                
+                {filteredUsers.map((user) => (
+                  <div key={user.id} className="grid grid-cols-12 gap-4 p-4 border-b hover:bg-gray-50">
+                    <div className="col-span-3 flex items-center space-x-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback>
+                          {user.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
                       <div>
                         <p className="font-medium">{user.name}</p>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                        <p className="text-sm text-gray-600 flex items-center">
+                          <Mail className="h-3 w-3 mr-1" />
+                          {user.email}
+                        </p>
+                        <p className="text-sm text-gray-600 flex items-center">
+                          <Phone className="h-3 w-3 mr-1" />
+                          {user.phone}
+                        </p>
                       </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center text-sm">
-                        <Mail className="h-3 w-3 mr-2 text-muted-foreground" />
-                        {user.email}
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <Phone className="h-3 w-3 mr-2 text-muted-foreground" />
-                        {user.phone}
-                      </div>
+                    <div className="col-span-2 flex items-center">
+                      <Badge variant="outline">{user.role}</Badge>
                     </div>
-                  </TableCell>
-                  <TableCell>{getTypeBadge(user.type)}</TableCell>
-                  <TableCell>{getStatusBadge(user.status)}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center text-sm">
-                      <Calendar className="h-3 w-3 mr-2 text-muted-foreground" />
-                      {user.joinDate}
+                    <div className="col-span-2 flex items-center">
+                      <Badge variant={getStatusColor(user.status)}>
+                        {user.status}
+                      </Badge>
                     </div>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{user.lastLogin}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleUserAction(user.id, 'view')}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleUserAction(user.id, 'edit')}>
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit User
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleUserAction(user.id, 'suspend')} className="text-red-600">
-                          <Ban className="h-4 w-4 mr-2" />
-                          Suspend User
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                    <div className="col-span-2 flex items-center">
+                      <span className="text-sm">{user.joinDate}</span>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <span className="text-sm">{user.lastActive}</span>
+                    </div>
+                    <div className="col-span-1 flex items-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => handleUserAction(user.id, 'view')}>
+                            View Profile
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleUserAction(user.id, 'edit')}>
+                            Edit User
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onClick={() => handleUserAction(user.id, 'suspend')}
+                            className="text-red-600"
+                          >
+                            {user.status === 'suspended' ? 'Activate' : 'Suspend'} User
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>

@@ -35,7 +35,9 @@ const SearchFilters = ({ onFiltersChange, onClearFilters }: SearchFiltersProps) 
   const handleFilterChange = (key: string, value: any) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
-    onFiltersChange(newFilters);
+    if (onFiltersChange) {
+      onFiltersChange(newFilters);
+    }
   };
 
   const clearAllFilters = () => {
@@ -51,7 +53,9 @@ const SearchFilters = ({ onFiltersChange, onClearFilters }: SearchFiltersProps) 
       location: ''
     };
     setFilters(clearedFilters);
-    onClearFilters();
+    if (onClearFilters) {
+      onClearFilters();
+    }
   };
 
   return (

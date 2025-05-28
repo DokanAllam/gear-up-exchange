@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Wishlist from "./pages/Wishlist";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminDashboard";
 import DealerDashboard from "./pages/DealerDashboard";
@@ -75,6 +76,7 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           
           {/* Dashboard Routes */}

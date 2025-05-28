@@ -97,8 +97,8 @@ const Services = () => {
     return true;
   });
 
-  const handleOfferBooking = (serviceId: string) => {
-    navigate(`/services/${serviceId}?tab=booking&offer=true`);
+  const handleOfferBooking = (serviceId: string, offerId?: string) => {
+    navigate(`/services/${serviceId}?tab=booking${offerId ? `&offer=${offerId}` : '&offer=true'}`);
   };
 
   return (
@@ -146,7 +146,7 @@ const Services = () => {
                       Valid until: {new Date(offer.validUntil).toLocaleDateString()}
                     </p>
                     <Button 
-                      onClick={() => handleOfferBooking(offer.serviceId)}
+                      onClick={() => handleOfferBooking(offer.serviceId, offer.id)}
                       className="w-full btn-primary"
                     >
                       <Calendar className="h-4 w-4 mr-2" />

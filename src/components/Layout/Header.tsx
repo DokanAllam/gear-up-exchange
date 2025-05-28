@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Car, User, Users, Menu, X, Heart } from 'lucide-react';
+import { Car, User, Users, Menu, X, Heart, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,6 +11,7 @@ const Header = () => {
   
   // Mock authentication state - in real app this would come from auth context
   const isAuthenticated = true; // Mock value
+  const notificationCount = 3; // Mock notification count
 
   const navItems = [
     { label: 'Buy Vehicles', href: '/vehicles', icon: Car },
@@ -59,11 +61,23 @@ const Header = () => {
           {/* Desktop Auth Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
             {isAuthenticated && (
-              <Link to="/wishlist">
-                <Button variant="outline" size="icon" className="border-red-200 text-red-600 hover:bg-red-50">
-                  <Heart className="h-4 w-4" />
-                </Button>
-              </Link>
+              <>
+                <Link to="/notifications">
+                  <Button variant="outline" size="icon" className="border-blue-200 text-blue-600 hover:bg-blue-50 relative">
+                    <Bell className="h-4 w-4" />
+                    {notificationCount > 0 && (
+                      <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-red-500 text-white text-xs">
+                        {notificationCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
+                <Link to="/wishlist">
+                  <Button variant="outline" size="icon" className="border-red-200 text-red-600 hover:bg-red-50">
+                    <Heart className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </>
             )}
             <Link to="/login">
               <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
@@ -114,12 +128,25 @@ const Header = () => {
               })}
               <div className="flex flex-col space-y-3 pt-4 border-t">
                 {isAuthenticated && (
-                  <Link to="/wishlist" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50">
-                      <Heart className="h-4 w-4 mr-2" />
-                      Wishlist
-                    </Button>
-                  </Link>
+                  <>
+                    <Link to="/notifications" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full border-blue-200 text-blue-600 hover:bg-blue-50">
+                        <Bell className="h-4 w-4 mr-2" />
+                        Notifications
+                        {notificationCount > 0 && (
+                          <Badge className="ml-2 bg-red-500 text-white">
+                            {notificationCount}
+                          </Badge>
+                        )}
+                      </Button>
+                    </Link>
+                    <Link to="/wishlist" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50">
+                        <Heart className="h-4 w-4 mr-2" />
+                        Wishlist
+                      </Button>
+                    </Link>
+                  </>
                 )}
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white">
