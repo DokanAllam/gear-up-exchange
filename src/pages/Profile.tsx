@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   User, 
   Car, 
@@ -20,12 +22,22 @@ import {
   Package,
   Clock,
   CheckCircle,
-  Truck
+  Truck,
+  Eye,
+  AlertCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [reviewText, setReviewText] = useState('');
+  const [reviewRating, setReviewRating] = useState(5);
   const { toast } = useToast();
 
   // Mock user data
@@ -100,7 +112,25 @@ const Profile = () => {
       status: 'active',
       views: 234,
       inquiries: 12,
-      datePosted: '2024-01-10'
+      datePosted: '2024-01-10',
+      description: 'Well-maintained Honda Civic with low mileage',
+      mileage: '45,000',
+      year: '2019',
+      rejectionReason: null
+    },
+    {
+      id: '2',
+      title: '2018 Toyota Camry',
+      price: 16800,
+      image: '/placeholder.svg',
+      status: 'rejected',
+      views: 0,
+      inquiries: 0,
+      datePosted: '2024-01-08',
+      description: 'Reliable Toyota Camry in excellent condition',
+      mileage: '52,000',
+      year: '2018',
+      rejectionReason: 'Images quality is poor. Please upload clearer photos of the vehicle.'
     }
   ];
 
@@ -114,7 +144,23 @@ const Profile = () => {
       time: '10:00 AM',
       status: 'confirmed',
       price: 75,
-      location: 'New York, NY'
+      location: 'New York, NY',
+      address: '123 Main St, New York, NY 10001',
+      phone: '+1 (555) 123-4567',
+      notes: 'Please use synthetic oil'
+    },
+    {
+      id: '2',
+      serviceName: 'Quick Fix Auto',
+      serviceType: 'Brake Inspection',
+      date: '2024-01-25',
+      time: '2:00 PM',
+      status: 'pending',
+      price: 50,
+      location: 'Brooklyn, NY',
+      address: '456 Oak Ave, Brooklyn, NY 11201',
+      phone: '+1 (555) 987-6543',
+      notes: 'Brake pads making noise'
     }
   ];
 
@@ -139,6 +185,14 @@ const Profile = () => {
         return 'bg-blue-100 text-blue-800';
       case 'processing':
         return 'bg-yellow-100 text-yellow-800';
+      case 'active':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      case 'confirmed':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -150,6 +204,47 @@ const Profile = () => {
       title: "Profile updated",
       description: "Your profile has been updated successfully.",
     });
+  };
+
+  const handleVehicleClick = (vehicle) => {
+    setSelectedVehicle(vehicle);
+    setIsVehicleModalOpen(true);
+  };
+
+  const handleBookingClick = (booking) => {
+    setSelectedBooking(booking);
+    setIsBookingModalOpen(true);
+  };
+
+  const handleOrderClick = (order) => {
+    setSelectedOrder(order);
+    setIsOrderModalOpen(true);
+  };
+
+  const handleCancelBooking = (bookingId) => {
+    toast({
+      title: "Booking cancelled",
+      description: "Your service booking has been cancelled successfully.",
+    });
+    setIsBookingModalOpen(false);
+  };
+
+  const handleCancelOrder = (orderId) => {
+    toast({
+      title: "Order cancelled",
+      description: "Your order has been cancelled successfully.",
+    });
+    setIsOrderModalOpen(false);
+  };
+
+  const handleSubmitReview = () => {
+    toast({
+      title: "Review submitted",
+      description: "Thank you for your review!",
+    });
+    setIsOrderModalOpen(false);
+    setReviewText('');
+    setReviewRating(5);
   };
 
   return (
@@ -304,11 +399,22 @@ const Profile = () => {
             <TabsContent value="vehicles">
               <div className="space-y-6">
                 {vehicleListings.map((vehicle) => (
-                  <Card key={vehicle.id}>
+                  <Card 
+                    key={vehicle.id} 
+                    className="cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={() => handleVehicleClick(vehicle)}
+                  >
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg">{vehicle.title}</CardTitle>
-                        <Badge variant="outline">{vehicle.status}</Badge>
+                        <div className="flex items-center space-x-2">
+                          <Badge className={getStatusColor(vehicle.status)}>
+                            {vehicle.status}
+                          </Badge>
+                          {vehicle.status === 'rejected' && (
+                            <AlertCircle className="h-5 w-5 text-red-500" />
+                          )}
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -344,11 +450,17 @@ const Profile = () => {
             <TabsContent value="bookings">
               <div className="space-y-6">
                 {serviceBookings.map((booking) => (
-                  <Card key={booking.id}>
+                  <Card 
+                    key={booking.id}
+                    className="cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={() => handleBookingClick(booking)}
+                  >
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg">{booking.serviceName}</CardTitle>
-                        <Badge variant="outline">{booking.status}</Badge>
+                        <Badge className={getStatusColor(booking.status)}>
+                          {booking.status}
+                        </Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -431,16 +543,29 @@ const Profile = () => {
                       <div className="flex justify-between items-center mt-4 pt-4 border-t">
                         <div className="flex space-x-4">
                           {order.status === 'delivered' && (
-                            <Button variant="outline" size="sm">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleOrderClick(order)}
+                            >
                               Leave Review
                             </Button>
                           )}
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleOrderClick(order)}
+                          >
                             View Details
                           </Button>
                         </div>
                         {order.status !== 'delivered' && (
-                          <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="text-red-600 border-red-200 hover:bg-red-50"
+                            onClick={() => handleCancelOrder(order.id)}
+                          >
                             Cancel Order
                           </Button>
                         )}
@@ -478,6 +603,232 @@ const Profile = () => {
           </Tabs>
         </div>
       </main>
+
+      {/* Vehicle Edit Modal */}
+      <Dialog open={isVehicleModalOpen} onOpenChange={setIsVehicleModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Vehicle Details - {selectedVehicle?.title}</DialogTitle>
+          </DialogHeader>
+          {selectedVehicle && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Status</Label>
+                  <Badge className={getStatusColor(selectedVehicle.status)}>
+                    {selectedVehicle.status}
+                  </Badge>
+                </div>
+                <div>
+                  <Label>Price</Label>
+                  <p className="font-medium">${selectedVehicle.price}</p>
+                </div>
+                <div>
+                  <Label>Year</Label>
+                  <p className="font-medium">{selectedVehicle.year}</p>
+                </div>
+                <div>
+                  <Label>Mileage</Label>
+                  <p className="font-medium">{selectedVehicle.mileage} miles</p>
+                </div>
+              </div>
+              
+              <div>
+                <Label>Description</Label>
+                <Textarea 
+                  value={selectedVehicle.description}
+                  readOnly
+                  className="bg-gray-50"
+                />
+              </div>
+
+              {selectedVehicle.status === 'rejected' && selectedVehicle.rejectionReason && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                    <h4 className="font-medium text-red-800">Rejection Reason</h4>
+                  </div>
+                  <p className="text-red-700">{selectedVehicle.rejectionReason}</p>
+                </div>
+              )}
+
+              <div className="flex justify-end space-x-4">
+                <Button variant="outline" onClick={() => setIsVehicleModalOpen(false)}>
+                  Close
+                </Button>
+                <Button className="btn-primary">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Listing
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Service Booking Details Modal */}
+      <Dialog open={isBookingModalOpen} onOpenChange={setIsBookingModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Booking Details - {selectedBooking?.serviceName}</DialogTitle>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Service Type</Label>
+                  <p className="font-medium">{selectedBooking.serviceType}</p>
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Badge className={getStatusColor(selectedBooking.status)}>
+                    {selectedBooking.status}
+                  </Badge>
+                </div>
+                <div>
+                  <Label>Date & Time</Label>
+                  <p className="font-medium">{new Date(selectedBooking.date).toLocaleDateString()} at {selectedBooking.time}</p>
+                </div>
+                <div>
+                  <Label>Price</Label>
+                  <p className="font-medium">${selectedBooking.price}</p>
+                </div>
+              </div>
+
+              <div>
+                <Label>Service Center</Label>
+                <p className="font-medium">{selectedBooking.serviceName}</p>
+                <p className="text-gray-600">{selectedBooking.address}</p>
+                <p className="text-gray-600">{selectedBooking.phone}</p>
+              </div>
+
+              {selectedBooking.notes && (
+                <div>
+                  <Label>Special Notes</Label>
+                  <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{selectedBooking.notes}</p>
+                </div>
+              )}
+
+              <div className="flex justify-between">
+                <Button variant="outline" onClick={() => setIsBookingModalOpen(false)}>
+                  Close
+                </Button>
+                <div className="space-x-4">
+                  <Button variant="outline">
+                    <Edit className="h-4 w-4 mr-2" />
+                    Reschedule
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="text-red-600 border-red-200 hover:bg-red-50"
+                    onClick={() => handleCancelBooking(selectedBooking.id)}
+                  >
+                    Cancel Booking
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Order Details Modal */}
+      <Dialog open={isOrderModalOpen} onOpenChange={setIsOrderModalOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Order Details - #{selectedOrder?.id}</DialogTitle>
+          </DialogHeader>
+          {selectedOrder && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label>Order Date</Label>
+                  <p className="font-medium">{new Date(selectedOrder.date).toLocaleDateString()}</p>
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Badge className={getStatusColor(selectedOrder.status)}>
+                    {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
+                  </Badge>
+                </div>
+                <div>
+                  <Label>Total Amount</Label>
+                  <p className="font-medium text-lg">${selectedOrder.total}</p>
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-lg font-medium">Order Items</Label>
+                <div className="space-y-3 mt-3">
+                  {selectedOrder.items.map((item, index) => (
+                    <div key={index} className="flex items-center space-x-4 p-4 border rounded-lg">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-20 h-20 object-cover rounded-lg"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-medium">{item.name}</h4>
+                        <p className="text-gray-600">Quantity: {item.quantity}</p>
+                        <p className="font-medium">${item.price}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {selectedOrder.status === 'delivered' && (
+                <div className="border-t pt-6">
+                  <Label className="text-lg font-medium">Leave a Review</Label>
+                  <div className="space-y-4 mt-3">
+                    <div>
+                      <Label>Rating</Label>
+                      <div className="flex space-x-1 mt-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star 
+                            key={star}
+                            className={`h-6 w-6 cursor-pointer ${
+                              star <= reviewRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                            }`}
+                            onClick={() => setReviewRating(star)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Review</Label>
+                      <Textarea 
+                        placeholder="Share your experience with this product..."
+                        value={reviewText}
+                        onChange={(e) => setReviewText(e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                    <Button onClick={handleSubmitReview} className="btn-primary">
+                      Submit Review
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-between border-t pt-6">
+                <Button variant="outline" onClick={() => setIsOrderModalOpen(false)}>
+                  Close
+                </Button>
+                {selectedOrder.status !== 'delivered' && (
+                  <Button 
+                    variant="outline" 
+                    className="text-red-600 border-red-200 hover:bg-red-50"
+                    onClick={() => handleCancelOrder(selectedOrder.id)}
+                  >
+                    Cancel Order
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
