@@ -4,15 +4,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { Car, User, Users, Menu, X, Heart, Bell, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, logout } = useAuth();
   
-  // Mock authentication state - in real app this would come from auth context
-  const isAuthenticated = true; // Mock value
-  const notificationCount = 3; // Mock notification count
-  const cartItemCount = 2; // Mock cart count
+  // Mock notification and cart counts
+  const notificationCount = 3;
+  const cartItemCount = 2;
 
   const navItems = [
     { label: 'Buy Vehicles', href: '/vehicles', icon: Car },
@@ -62,7 +63,7 @@ const Header = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <>
                 <Link to="/notifications">
                   <Button variant="outline" size="icon" className="border-blue-200 text-blue-600 hover:bg-blue-50 relative">
@@ -89,18 +90,33 @@ const Header = () => {
                     <Heart className="h-4 w-4" />
                   </Button>
                 </Link>
+                <Link to="/profile">
+                  <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                    Profile
+                  </Button>
+                </Link>
+                <Button 
+                  variant="outline" 
+                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="btn-primary">
+                    Sign Up
+                  </Button>
+                </Link>
               </>
             )}
-            <Link to="/login">
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                Login
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="btn-primary">
-                Sign Up
-              </Button>
-            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -139,7 +155,7 @@ const Header = () => {
                 );
               })}
               <div className="flex flex-col space-y-3 pt-4 border-t">
-                {isAuthenticated && (
+                {isAuthenticated ? (
                   <>
                     <Link to="/notifications" onClick={() => setIsMenuOpen(false)}>
                       <Button variant="outline" className="w-full border-blue-200 text-blue-600 hover:bg-blue-50">
@@ -169,18 +185,36 @@ const Header = () => {
                         Wishlist
                       </Button>
                     </Link>
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white">
+                        Profile
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                      onClick={() => {
+                        logout();
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                      <Button className="btn-primary w-full">
+                        Sign Up
+                      </Button>
+                    </Link>
                   </>
                 )}
-                <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white">
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/register" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="btn-primary w-full">
-                    Sign Up
-                  </Button>
-                </Link>
               </div>
             </div>
           </div>

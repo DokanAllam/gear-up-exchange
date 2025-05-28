@@ -4,254 +4,179 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Users, 
-  Search, 
-  Plus, 
-  MoreHorizontal,
-  Mail,
-  Phone,
-  Calendar,
-  Ban,
-  UserCheck
-} from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Search, Plus, Edit, Trash2, Eye, UserCheck, UserX } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminUsers = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  
+  const { toast } = useToast();
+
   const users = [
     {
       id: '1',
       name: 'John Doe',
-      email: 'john.doe@example.com',
-      phone: '+1 (555) 123-4567',
-      role: 'User',
-      status: 'active',
+      email: 'john@example.com',
+      role: 'Customer',
+      status: 'Active',
       joinDate: '2024-01-15',
-      lastActive: '2024-01-25',
-      avatar: '/placeholder.svg'
+      lastActive: '2024-01-20'
     },
     {
       id: '2',
       name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      phone: '+1 (555) 987-6543',
+      email: 'jane@dealer.com',
       role: 'Dealer',
-      status: 'active',
+      status: 'Active',
       joinDate: '2024-01-10',
-      lastActive: '2024-01-24',
-      avatar: '/placeholder.svg'
+      lastActive: '2024-01-19'
     },
     {
       id: '3',
-      name: 'Mike Johnson',
-      email: 'mike.johnson@example.com',
-      phone: '+1 (555) 456-7890',
+      name: 'Bob Wilson',
+      email: 'bob@service.com',
       role: 'Service Provider',
-      status: 'suspended',
+      status: 'Suspended',
       joinDate: '2024-01-05',
-      lastActive: '2024-01-20',
-      avatar: '/placeholder.svg'
+      lastActive: '2024-01-18'
     }
   ];
 
-  const handleUserAction = (userId: string, action: string) => {
-    console.log(`${action} user:`, userId);
+  const handleUserAction = (action: string, userId: string) => {
+    toast({
+      title: `User ${action}`,
+      description: `User ${userId} has been ${action.toLowerCase()}.`,
+    });
+  };
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'Admin': return 'bg-purple-100 text-purple-800';
+      case 'Dealer': return 'bg-blue-100 text-blue-800';
+      case 'Service Provider': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active':
-        return 'default';
-      case 'suspended':
-        return 'destructive';
-      case 'pending':
-        return 'secondary';
-      default:
-        return 'outline';
+      case 'Active': return 'bg-green-100 text-green-800';
+      case 'Suspended': return 'bg-red-100 text-red-800';
+      case 'Pending': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
-
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-secondary">User Management</h1>
-          <p className="text-gray-600">Manage users, dealers, and service providers</p>
-        </div>
+        <h1 className="text-3xl font-bold">User Management</h1>
         <Button className="btn-primary">
           <Plus className="h-4 w-4 mr-2" />
           Add User
         </Button>
       </div>
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center space-x-2">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div>
-                <p className="text-2xl font-bold">1,247</p>
-                <p className="text-sm text-gray-600">Total Users</p>
-              </div>
-            </div>
+            <div className="text-2xl font-bold text-primary">1,234</div>
+            <p className="text-gray-600">Total Users</p>
           </CardContent>
         </Card>
-        
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center space-x-2">
-              <UserCheck className="h-8 w-8 text-green-600" />
-              <div>
-                <p className="text-2xl font-bold">1,156</p>
-                <p className="text-sm text-gray-600">Active Users</p>
-              </div>
-            </div>
+            <div className="text-2xl font-bold text-green-600">1,180</div>
+            <p className="text-gray-600">Active Users</p>
           </CardContent>
         </Card>
-        
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center space-x-2">
-              <Ban className="h-8 w-8 text-red-600" />
-              <div>
-                <p className="text-2xl font-bold">91</p>
-                <p className="text-sm text-gray-600">Suspended</p>
-              </div>
-            </div>
+            <div className="text-2xl font-bold text-yellow-600">32</div>
+            <p className="text-gray-600">Pending Approval</p>
           </CardContent>
         </Card>
-        
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-center space-x-2">
-              <Calendar className="h-8 w-8 text-purple-600" />
-              <div>
-                <p className="text-2xl font-bold">234</p>
-                <p className="text-sm text-gray-600">New This Month</p>
-              </div>
-            </div>
+            <div className="text-2xl font-bold text-red-600">22</div>
+            <p className="text-gray-600">Suspended</p>
           </CardContent>
         </Card>
       </div>
 
+      {/* Users Table */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Users</CardTitle>
-            <div className="flex items-center space-x-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search users..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-64"
-                />
-              </div>
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search users..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList>
-              <TabsTrigger value="all">All Users</TabsTrigger>
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="suspended">Suspended</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="all" className="space-y-4">
-              <div className="rounded-md border">
-                <div className="grid grid-cols-12 gap-4 p-4 font-medium border-b bg-gray-50">
-                  <div className="col-span-3">User</div>
-                  <div className="col-span-2">Role</div>
-                  <div className="col-span-2">Status</div>
-                  <div className="col-span-2">Join Date</div>
-                  <div className="col-span-2">Last Active</div>
-                  <div className="col-span-1">Actions</div>
-                </div>
-                
-                {filteredUsers.map((user) => (
-                  <div key={user.id} className="grid grid-cols-12 gap-4 p-4 border-b hover:bg-gray-50">
-                    <div className="col-span-3 flex items-center space-x-3">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={user.avatar} alt={user.name} />
-                        <AvatarFallback>
-                          {user.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium">{user.name}</p>
-                        <p className="text-sm text-gray-600 flex items-center">
-                          <Mail className="h-3 w-3 mr-1" />
-                          {user.email}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center">
-                          <Phone className="h-3 w-3 mr-1" />
-                          {user.phone}
-                        </p>
-                      </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Join Date</TableHead>
+                <TableHead>Last Active</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Badge className={getRoleColor(user.role)}>
+                      {user.role}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getStatusColor(user.status)}>
+                      {user.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{user.joinDate}</TableCell>
+                  <TableCell>{user.lastActive}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button variant="outline" size="icon" onClick={() => handleUserAction('View', user.id)}>
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleUserAction('Edit', user.id)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      {user.status === 'Active' ? (
+                        <Button variant="outline" size="icon" onClick={() => handleUserAction('Suspend', user.id)}>
+                          <UserX className="h-4 w-4" />
+                        </Button>
+                      ) : (
+                        <Button variant="outline" size="icon" onClick={() => handleUserAction('Activate', user.id)}>
+                          <UserCheck className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button variant="outline" size="icon" onClick={() => handleUserAction('Delete', user.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <div className="col-span-2 flex items-center">
-                      <Badge variant="outline">{user.role}</Badge>
-                    </div>
-                    <div className="col-span-2 flex items-center">
-                      <Badge variant={getStatusColor(user.status)}>
-                        {user.status}
-                      </Badge>
-                    </div>
-                    <div className="col-span-2 flex items-center">
-                      <span className="text-sm">{user.joinDate}</span>
-                    </div>
-                    <div className="col-span-2 flex items-center">
-                      <span className="text-sm">{user.lastActive}</span>
-                    </div>
-                    <div className="col-span-1 flex items-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => handleUserAction(user.id, 'view')}>
-                            View Profile
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleUserAction(user.id, 'edit')}>
-                            Edit User
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={() => handleUserAction(user.id, 'suspend')}
-                            className="text-red-600"
-                          >
-                            {user.status === 'suspended' ? 'Activate' : 'Suspend'} User
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>

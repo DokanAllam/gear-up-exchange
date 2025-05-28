@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
+import ProductReviews from '@/components/ProductReviews';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -44,6 +44,34 @@ const ProductDetail = () => {
       'Weight': '2.5 kg'
     }
   };
+
+  // Mock reviews data
+  const reviews = [
+    {
+      id: '1',
+      userName: 'John Smith',
+      rating: 5,
+      comment: 'Excellent quality floor mats! Perfect fit and great protection.',
+      date: '2024-01-15',
+      verified: true
+    },
+    {
+      id: '2',
+      userName: 'Sarah Johnson',
+      rating: 4,
+      comment: 'Good quality, easy to clean. Slightly expensive but worth it.',
+      date: '2024-01-10',
+      verified: true
+    },
+    {
+      id: '3',
+      userName: 'Mike Wilson',
+      rating: 5,
+      comment: 'Perfect for my car! Great material and fits perfectly.',
+      date: '2024-01-05',
+      verified: false
+    }
+  ];
 
   const handleAddToCart = () => {
     toast({
@@ -219,10 +247,11 @@ const ProductDetail = () => {
 
           {/* Product Details Tabs */}
           <Tabs defaultValue="specifications" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="specifications">Specifications</TabsTrigger>
               <TabsTrigger value="reviews">Reviews ({product.reviewCount})</TabsTrigger>
               <TabsTrigger value="shipping">Shipping & Returns</TabsTrigger>
+              <TabsTrigger value="qa">Q&A</TabsTrigger>
             </TabsList>
             
             <TabsContent value="specifications" className="mt-6">
@@ -241,14 +270,11 @@ const ProductDetail = () => {
             </TabsContent>
             
             <TabsContent value="reviews" className="mt-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="text-center py-8">
-                    <h3 className="text-xl font-semibold mb-2">Customer Reviews</h3>
-                    <p className="text-gray-600">Reviews coming soon...</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <ProductReviews 
+                productId={product.id}
+                reviews={reviews}
+                averageRating={product.rating}
+              />
             </TabsContent>
             
             <TabsContent value="shipping" className="mt-6">
@@ -263,6 +289,17 @@ const ProductDetail = () => {
                       <h3 className="font-semibold mb-2">Returns & Exchanges</h3>
                       <p className="text-gray-600">30-day return policy. Items must be in original condition and packaging.</p>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="qa" className="mt-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center py-8">
+                    <h3 className="text-xl font-semibold mb-2">Questions & Answers</h3>
+                    <p className="text-gray-600">Q&A section coming soon...</p>
                   </div>
                 </CardContent>
               </Card>

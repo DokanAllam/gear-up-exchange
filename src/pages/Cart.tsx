@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Minus, Plus, Trash2, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const Cart = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const [cartItems, setCartItems] = useState([
     {
@@ -50,6 +51,10 @@ const Cart = () => {
       title: "Item removed",
       description: "Item has been removed from your cart.",
     });
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate('/checkout');
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -182,7 +187,10 @@ const Cart = () => {
                       </div>
                     </div>
                     
-                    <Button className="w-full btn-primary text-lg py-6">
+                    <Button 
+                      className="w-full btn-primary text-lg py-6"
+                      onClick={handleProceedToCheckout}
+                    >
                       Proceed to Checkout
                     </Button>
                     

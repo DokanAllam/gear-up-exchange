@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import OffersSection from '@/components/OffersSection';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -111,6 +112,9 @@ const Store = () => {
               Quality automotive parts and accessories for your vehicle
             </p>
           </div>
+
+          {/* Offers Section */}
+          <OffersSection />
 
           {/* Search and Filters */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
