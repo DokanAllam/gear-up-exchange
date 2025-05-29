@@ -89,7 +89,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
     <Card className="mb-6 shadow-lg border-0 bg-gradient-to-r from-white to-gray-50">
       <CardContent className="p-0">
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          {/* Enhanced Header */}
           <div className="flex items-center justify-between p-6 bg-gradient-to-r from-primary/5 to-orange-500/5 border-b">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-primary/10 rounded-lg">
@@ -143,9 +142,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
             </div>
           </div>
 
-          <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+          <CollapsibleContent>
             <div className="p-6 space-y-6">
-              {/* Quick Filters */}
               <div className="flex flex-wrap gap-2 mb-4">
                 <Badge 
                   variant={filters.vehicleType === 'car' ? 'default' : 'outline'} 
@@ -172,7 +170,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
                 </Badge>
               </div>
 
-              {/* Main Filters Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
@@ -246,7 +243,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
                   </Select>
                 </div>
 
-                {/* Price Range - Full Width */}
                 <div className="md:col-span-2 space-y-3">
                   <label className="flex items-center text-sm font-medium text-gray-700">
                     <DollarSign className="h-4 w-4 mr-2 text-primary" />
@@ -296,7 +292,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
                 </div>
               </div>
 
-              {/* Apply Filters Button */}
               <div className="flex justify-end pt-4 border-t">
                 <Button 
                   className="px-8 py-2 bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 transition-all duration-200"

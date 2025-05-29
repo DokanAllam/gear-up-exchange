@@ -7,6 +7,7 @@ import AdminOverview from './admin/AdminOverview';
 import AdminUsers from './admin/AdminUsers';
 import AdminVehicles from './admin/AdminVehicles';
 import AdminDealers from './admin/AdminDealers';
+import AdminDealerDetails from './admin/AdminDealerDetails';
 import AdminServices from './admin/AdminServices';
 import AdminApprovals from './admin/AdminApprovals';
 import AdminCommunity from './admin/AdminCommunity';
@@ -19,14 +20,15 @@ import AdminSystem from './admin/AdminSystem';
 const AdminDashboard = () => {
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-gray-50">
+      <div className="flex h-screen bg-gray-50 w-full">
         <AdminSidebar />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto w-full">
           <Routes>
             <Route path="/" element={<AdminOverview />} />
             <Route path="/users" element={<AdminUsers />} />
             <Route path="/vehicles" element={<AdminVehicles />} />
             <Route path="/dealers" element={<AdminDealers />} />
+            <Route path="/dealers/:id" element={<AdminDealerDetails />} />
             <Route path="/services" element={<AdminServices />} />
             <Route path="/approvals" element={<AdminApprovals />} />
             <Route path="/community" element={<AdminCommunity />} />
