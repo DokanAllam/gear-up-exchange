@@ -4,15 +4,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Search, Plus, Edit, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminVehicles = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { toast } = useToast();
 
-  const vehicles = [
+  const [vehicles, setVehicles] = useState([
     {
       id: '1',
       title: '2023 BMW M3 Competition',
@@ -21,7 +27,11 @@ const AdminVehicles = () => {
       status: 'Approved',
       condition: 'Used',
       dateAdded: '2024-01-15',
-      views: 245
+      views: 245,
+      year: 2023,
+      mileage: '5000 km',
+      fuelType: 'Petrol',
+      transmission: 'Automatic'
     },
     {
       id: '2',
@@ -31,7 +41,11 @@ const AdminVehicles = () => {
       status: 'Pending',
       condition: 'New',
       dateAdded: '2024-01-18',
-      views: 189
+      views: 189,
+      year: 2024,
+      mileage: '0 km',
+      fuelType: 'Electric',
+      transmission: 'Automatic'
     },
     {
       id: '3',
@@ -41,15 +55,63 @@ const AdminVehicles = () => {
       status: 'Rejected',
       condition: 'Used',
       dateAdded: '2024-01-12',
-      views: 156
+      views: 156,
+      year: 2022,
+      mileage: '15000 km',
+      fuelType: 'Petrol',
+      transmission: 'Manual'
     }
-  ];
+  ]);
 
-  const handleVehicleAction = (action: string, vehicleId: string) => {
+  const handleViewVehicle = (vehicle: any) => {
+    setSelectedVehicle(vehicle);
+    setIsViewModalOpen(true);
+  };
+
+  const handleEditVehicle = (vehicle: any) => {
+    setSelectedVehicle(vehicle);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteVehicle = (vehicle: any) => {
+    setSelectedVehicle(vehicle);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteVehicle = () => {
+    if (selectedVehicle) {
+      setVehicles(vehicles.filter(v => v.id !== selectedVehicle.id));
+      toast({
+        title: "Vehicle Deleted",
+        description: `${selectedVehicle.title} has been deleted successfully.`,
+      });
+      setIsDeleteModalOpen(false);
+      setSelectedVehicle(null);
+    }
+  };
+
+  const handleApproveVehicle = (vehicleId: string) => {
+    setVehicles(vehicles.map(v => 
+      v.id === vehicleId ? { ...v, status: 'Approved' } : v
+    ));
     toast({
-      title: `Vehicle ${action}`,
-      description: `Vehicle ${vehicleId} has been ${action.toLowerCase()}.`,
+      title: "Vehicle Approved",
+      description: `Vehicle ${vehicleId} has been approved.`,
     });
+  };
+
+  const handleRejectVehicle = (vehicleId: string) => {
+    setVehicles(vehicles.map(v => 
+      v.id === vehicleId ? { ...v, status: 'Rejected' } : v
+    ));
+    toast({
+      title: "Vehicle Rejected",
+      description: `Vehicle ${vehicleId} has been rejected.`,
+    });
+  };
+
+  const handleAddVehicle = () => {
+    setIsAddModalOpen(true);
   };
 
   const getStatusColor = (status: string) => {
@@ -73,7 +135,7 @@ const AdminVehicles = () => {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Vehicle Management</h1>
-        <Button className="btn-primary">
+        <Button className="btn-primary" onClick={handleAddVehicle}>
           <Plus className="h-4 w-4 mr-2" />
           Add Vehicle
         </Button>
@@ -157,23 +219,23 @@ const AdminVehicles = () => {
                   <TableCell>{vehicle.views}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="icon" onClick={() => handleVehicleAction('View', vehicle.id)}>
+                      <Button variant="outline" size="icon" onClick={() => handleViewVehicle(vehicle)}>
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleVehicleAction('Edit', vehicle.id)}>
+                      <Button variant="outline" size="icon" onClick={() => handleEditVehicle(vehicle)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                       {vehicle.status === 'Pending' && (
                         <>
-                          <Button variant="outline" size="icon" onClick={() => handleVehicleAction('Approve', vehicle.id)}>
+                          <Button variant="outline" size="icon" onClick={() => handleApproveVehicle(vehicle.id)}>
                             <CheckCircle className="h-4 w-4 text-green-600" />
                           </Button>
-                          <Button variant="outline" size="icon" onClick={() => handleVehicleAction('Reject', vehicle.id)}>
+                          <Button variant="outline" size="icon" onClick={() => handleRejectVehicle(vehicle.id)}>
                             <XCircle className="h-4 w-4 text-red-600" />
                           </Button>
                         </>
                       )}
-                      <Button variant="outline" size="icon" onClick={() => handleVehicleAction('Delete', vehicle.id)}>
+                      <Button variant="outline" size="icon" onClick={() => handleDeleteVehicle(vehicle)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -184,6 +246,85 @@ const AdminVehicles = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* View Vehicle Modal */}
+      <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Vehicle Details</DialogTitle>
+          </DialogHeader>
+          {selectedVehicle && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div><strong>Title:</strong> {selectedVehicle.title}</div>
+                <div><strong>Price:</strong> ${selectedVehicle.price.toLocaleString()}</div>
+                <div><strong>Year:</strong> {selectedVehicle.year}</div>
+                <div><strong>Mileage:</strong> {selectedVehicle.mileage}</div>
+                <div><strong>Fuel Type:</strong> {selectedVehicle.fuelType}</div>
+                <div><strong>Transmission:</strong> {selectedVehicle.transmission}</div>
+                <div><strong>Dealer:</strong> {selectedVehicle.dealer}</div>
+                <div><strong>Status:</strong> 
+                  <Badge className={`ml-2 ${getStatusColor(selectedVehicle.status)}`}>
+                    {selectedVehicle.status}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Vehicle Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Vehicle</DialogTitle>
+          </DialogHeader>
+          <div className="text-center py-8">
+            <p className="text-gray-600">Edit vehicle form will be implemented here...</p>
+            <Button className="mt-4" onClick={() => setIsEditModalOpen(false)}>Close</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Vehicle Modal */}
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add New Vehicle</DialogTitle>
+          </DialogHeader>
+          <div className="text-center py-8">
+            <p className="text-gray-600">Add vehicle form will be implemented here...</p>
+            <Button className="mt-4" onClick={() => setIsAddModalOpen(false)}>Close</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>Are you sure you want to delete this vehicle?</p>
+            {selectedVehicle && (
+              <div className="p-4 bg-gray-50 rounded">
+                <strong>{selectedVehicle.title}</strong>
+                <p className="text-sm text-gray-600">{selectedVehicle.dealer}</p>
+              </div>
+            )}
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={confirmDeleteVehicle}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

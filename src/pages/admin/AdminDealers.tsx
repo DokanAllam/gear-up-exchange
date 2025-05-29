@@ -1,11 +1,11 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Search, 
   Filter, 
@@ -21,14 +21,18 @@ import {
   Calendar,
   Clock
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminDealers = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDealer, setSelectedDealer] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDealer, setSelectedDealer] = useState<any>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'approve' | 'reject' | null>(null);
 
   // Mock dealer data
-  const dealers = [
+  const [dealers, setDealers] = useState([
     {
       id: '1',
       name: 'Premium Auto Dealers',
@@ -77,9 +81,9 @@ const AdminDealers = () => {
       businessType: 'Independent',
       website: 'www.luxurycars.com'
     }
-  ];
+  ]);
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
         return 'bg-green-100 text-green-800';
@@ -92,17 +96,38 @@ const AdminDealers = () => {
     }
   };
 
-  const handleViewDealer = (dealer) => {
+  const handleViewDealer = (dealer: any) => {
+    navigate(`/admin/dealers/${dealer.id}`);
+  };
+
+  const handleApproveDealer = (dealer: any) => {
     setSelectedDealer(dealer);
-    setIsModalOpen(true);
+    setConfirmAction('approve');
+    setIsConfirmModalOpen(true);
   };
 
-  const handleApproveDealer = (dealerId) => {
-    console.log('Approving dealer:', dealerId);
+  const handleRejectDealer = (dealer: any) => {
+    setSelectedDealer(dealer);
+    setConfirmAction('reject');
+    setIsConfirmModalOpen(true);
   };
 
-  const handleRejectDealer = (dealerId) => {
-    console.log('Rejecting dealer:', dealerId);
+  const confirmDealerAction = () => {
+    if (selectedDealer && confirmAction) {
+      const newStatus = confirmAction === 'approve' ? 'active' : 'suspended';
+      setDealers(dealers.map(d => 
+        d.id === selectedDealer.id ? { ...d, status: newStatus } : d
+      ));
+      
+      toast({
+        title: `Dealer ${confirmAction === 'approve' ? 'Approved' : 'Rejected'}`,
+        description: `${selectedDealer.name} has been ${confirmAction === 'approve' ? 'approved' : 'rejected'}.`,
+      });
+      
+      setIsConfirmModalOpen(false);
+      setSelectedDealer(null);
+      setConfirmAction(null);
+    }
   };
 
   const filteredDealers = dealers.filter(dealer =>
@@ -259,7 +284,7 @@ const AdminDealers = () => {
                               variant="outline"
                               size="sm"
                               className="text-green-600 border-green-200 hover:bg-green-50"
-                              onClick={() => handleApproveDealer(dealer.id)}
+                              onClick={() => handleApproveDealer(dealer)}
                             >
                               <Check className="h-4 w-4" />
                             </Button>
@@ -267,7 +292,7 @@ const AdminDealers = () => {
                               variant="outline"
                               size="sm"
                               className="text-red-600 border-red-200 hover:bg-red-50"
-                              onClick={() => handleRejectDealer(dealer.id)}
+                              onClick={() => handleRejectDealer(dealer)}
                             >
                               <X className="h-4 w-4" />
                             </Button>
@@ -283,66 +308,37 @@ const AdminDealers = () => {
         </CardContent>
       </Card>
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl">
+      {/* Confirmation Modal */}
+      <Dialog open={isConfirmModalOpen} onOpenChange={setIsConfirmModalOpen}>
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>Dealer Details - {selectedDealer?.name}</DialogTitle>
+            <DialogTitle>
+              Confirm {confirmAction === 'approve' ? 'Approval' : 'Rejection'}
+            </DialogTitle>
           </DialogHeader>
-          {selectedDealer && (
-            <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
-                <TabsTrigger value="activity">Activity</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="details" className="space-y-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold mb-3">Basic Information</h4>
-                    <div className="space-y-2 text-sm">
-                      <div><strong>Name:</strong> {selectedDealer.name}</div>
-                      <div><strong>Email:</strong> {selectedDealer.email}</div>
-                      <div><strong>Phone:</strong> {selectedDealer.phone}</div>
-                      <div><strong>Website:</strong> {selectedDealer.website}</div>
-                      <div><strong>Business Type:</strong> {selectedDealer.businessType}</div>
-                      <div><strong>License Number:</strong> {selectedDealer.licenseNumber}</div>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-3">Address & Status</h4>
-                    <div className="space-y-2 text-sm">
-                      <div><strong>Address:</strong> {selectedDealer.address}</div>
-                      <div><strong>Join Date:</strong> {selectedDealer.joinDate}</div>
-                      <div><strong>Status:</strong> 
-                        <Badge className={`ml-2 ${getStatusColor(selectedDealer.status)}`}>
-                          {selectedDealer.status}
-                        </Badge>
-                      </div>
-                      <div><strong>Total Sales:</strong> {selectedDealer.totalSales}</div>
-                      <div><strong>Active Vehicles:</strong> {selectedDealer.totalVehicles}</div>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="vehicles">
-                <div className="text-center py-8">
-                  <Car className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Vehicle Listings</h3>
-                  <p className="text-gray-600">Vehicle management coming soon...</p>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="activity">
-                <div className="text-center py-8">
-                  <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Activity Log</h3>
-                  <p className="text-gray-600">Activity tracking coming soon...</p>
-                </div>
-              </TabsContent>
-            </Tabs>
-          )}
+          <div className="space-y-4">
+            <p>
+              Are you sure you want to {confirmAction === 'approve' ? 'approve' : 'reject'} this dealer?
+            </p>
+            {selectedDealer && (
+              <div className="p-4 bg-gray-50 rounded">
+                <strong>{selectedDealer.name}</strong>
+                <p className="text-sm text-gray-600">{selectedDealer.email}</p>
+                <p className="text-sm text-gray-600">{selectedDealer.location}</p>
+              </div>
+            )}
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setIsConfirmModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                variant={confirmAction === 'approve' ? 'default' : 'destructive'}
+                onClick={confirmDealerAction}
+              >
+                {confirmAction === 'approve' ? 'Approve' : 'Reject'}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
