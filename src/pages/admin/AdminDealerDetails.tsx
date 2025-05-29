@@ -1,362 +1,346 @@
 
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, MapPin, Phone, Mail, Star, Car, Award, Users, Globe, Edit, Save, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Edit, Save, X, Building, MapPin, Phone, Mail, Star, Car, Calendar, Clock, Globe, CreditCard } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDealerDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
-
-  // Mock dealer data - would come from API in real app
-  const [dealer, setDealer] = useState({
+  const [dealerData, setDealerData] = useState({
     id: id || '1',
-    name: 'Premium Auto Dealers',
-    email: 'info@premiumauto.com',
+    name: 'Premium Auto Gallery',
+    email: 'info@premiumautogallery.com',
     phone: '+1 (555) 123-4567',
-    location: 'New York, NY',
-    address: '123 Main St, New York, NY 10001',
+    location: 'Downtown Manhattan, NY',
+    address: '123 Auto Plaza, New York, NY 10001',
+    website: 'www.premiumautogallery.com',
     status: 'active',
     rating: 4.8,
-    totalVehicles: 45,
-    totalSales: 234,
+    totalVehicles: 150,
+    totalSales: 285,
     joinDate: '2023-01-15',
     licenseNumber: 'DL12345',
     businessType: 'Franchise',
-    website: 'www.premiumauto.com',
-    description: 'Premium Auto Dealers has been serving the New York area for over 20 years, specializing in luxury and premium vehicles.',
-    bankAccount: '**** **** **** 1234',
-    taxId: 'TAX123456789',
-    insurancePolicy: 'INS987654321'
+    description: 'Premium Auto Gallery has been serving New York with the finest selection of luxury and sports vehicles for over a decade.',
+    specialties: ['Luxury Cars', 'Sports Cars', 'Electric Vehicles']
   });
 
   const handleSave = () => {
     setIsEditing(false);
     toast({
       title: "Dealer Updated",
-      description: "Dealer information has been updated successfully.",
+      description: `${dealerData.name} has been updated successfully.`,
+    });
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    setDealerData(prev => ({ ...prev, status: newStatus }));
+    toast({
+      title: "Status Updated",
+      description: `Dealer status changed to ${newStatus}.`,
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'suspended':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-green-100 text-green-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'suspended': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="w-full p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" onClick={() => navigate('/admin/dealers')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dealers
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">{dealer.name}</h1>
-            <p className="text-gray-600">Dealer ID: {dealer.id}</p>
-          </div>
+          <Link to="/admin/dealers" className="inline-flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Dealers</span>
+          </Link>
+          <h1 className="text-3xl font-bold">Dealer Details</h1>
         </div>
-        <div className="flex space-x-2">
-          {isEditing ? (
-            <>
+        <div className="flex items-center space-x-2">
+          <Badge className={getStatusColor(dealerData.status)}>
+            {dealerData.status}
+          </Badge>
+          {!isEditing ? (
+            <Button onClick={() => setIsEditing(true)} className="btn-primary">
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Dealer
+            </Button>
+          ) : (
+            <div className="flex space-x-2">
               <Button variant="outline" onClick={() => setIsEditing(false)}>
                 <X className="h-4 w-4 mr-2" />
                 Cancel
               </Button>
-              <Button onClick={handleSave}>
+              <Button onClick={handleSave} className="btn-primary">
                 <Save className="h-4 w-4 mr-2" />
                 Save Changes
               </Button>
-            </>
-          ) : (
-            <Button onClick={() => setIsEditing(true)}>
-              <Edit className="h-4 w-4 mr-2" />
-              Edit Dealer
-            </Button>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Status</p>
-                <Badge className={getStatusColor(dealer.status)}>
-                  {dealer.status}
-                </Badge>
-              </div>
-              <Building className="h-8 w-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Vehicles</p>
-                <p className="text-2xl font-bold">{dealer.totalVehicles}</p>
-              </div>
-              <Car className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Sales</p>
-                <p className="text-2xl font-bold">{dealer.totalSales}</p>
-              </div>
-              <CreditCard className="h-8 w-8 text-purple-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Rating</p>
-                <div className="flex items-center">
-                  <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
-                  <span className="text-xl font-bold">{dealer.rating}</span>
-                </div>
-              </div>
-              <Star className="h-8 w-8 text-yellow-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Detailed Information */}
-      <Tabs defaultValue="details" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
-          <TabsTrigger value="financial">Financial</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="details">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Building className="h-5 w-5 mr-2" />
-                  Basic Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Dealer Name</label>
-                    {isEditing ? (
-                      <Input 
-                        value={dealer.name} 
-                        onChange={(e) => setDealer({...dealer, name: e.target.value})}
-                        className="mt-1"
-                      />
-                    ) : (
-                      <p className="mt-1 font-medium">{dealer.name}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Business Type</label>
-                    {isEditing ? (
-                      <Input 
-                        value={dealer.businessType} 
-                        onChange={(e) => setDealer({...dealer, businessType: e.target.value})}
-                        className="mt-1"
-                      />
-                    ) : (
-                      <p className="mt-1 font-medium">{dealer.businessType}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">License Number</label>
-                    {isEditing ? (
-                      <Input 
-                        value={dealer.licenseNumber} 
-                        onChange={(e) => setDealer({...dealer, licenseNumber: e.target.value})}
-                        className="mt-1"
-                      />
-                    ) : (
-                      <p className="mt-1 font-medium">{dealer.licenseNumber}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Join Date</label>
-                    <p className="mt-1 font-medium flex items-center">
-                      <Calendar className="h-4 w-4 mr-1 text-gray-400" />
-                      {dealer.joinDate}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Description</label>
-                  {isEditing ? (
-                    <textarea 
-                      value={dealer.description} 
-                      onChange={(e) => setDealer({...dealer, description: e.target.value})}
-                      className="mt-1 w-full p-2 border rounded-md"
-                      rows={3}
-                    />
-                  ) : (
-                    <p className="mt-1 text-gray-700">{dealer.description}</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Phone className="h-5 w-5 mr-2" />
-                  Contact Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Email</label>
-                  {isEditing ? (
-                    <Input 
-                      value={dealer.email} 
-                      onChange={(e) => setDealer({...dealer, email: e.target.value})}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <p className="mt-1 font-medium flex items-center">
-                      <Mail className="h-4 w-4 mr-1 text-gray-400" />
-                      {dealer.email}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Phone</label>
-                  {isEditing ? (
-                    <Input 
-                      value={dealer.phone} 
-                      onChange={(e) => setDealer({...dealer, phone: e.target.value})}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <p className="mt-1 font-medium flex items-center">
-                      <Phone className="h-4 w-4 mr-1 text-gray-400" />
-                      {dealer.phone}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Website</label>
-                  {isEditing ? (
-                    <Input 
-                      value={dealer.website} 
-                      onChange={(e) => setDealer({...dealer, website: e.target.value})}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <p className="mt-1 font-medium flex items-center">
-                      <Globe className="h-4 w-4 mr-1 text-gray-400" />
-                      {dealer.website}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Address</label>
-                  {isEditing ? (
-                    <Input 
-                      value={dealer.address} 
-                      onChange={(e) => setDealer({...dealer, address: e.target.value})}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <p className="mt-1 font-medium flex items-center">
-                      <MapPin className="h-4 w-4 mr-1 text-gray-400" />
-                      {dealer.address}
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="vehicles">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Basic Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Vehicle Listings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <Car className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Vehicle Management</h3>
-                <p className="text-gray-600">Detailed vehicle listings will be displayed here</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="financial">
-          <Card>
-            <CardHeader>
-              <CardTitle>Financial Information</CardTitle>
+              <CardTitle>Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Bank Account</label>
-                  <p className="mt-1 font-medium">{dealer.bankAccount}</p>
+              {isEditing ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Dealer Name</Label>
+                    <Input
+                      id="name"
+                      value={dealerData.name}
+                      onChange={(e) => setDealerData(prev => ({ ...prev, name: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={dealerData.email}
+                      onChange={(e) => setDealerData(prev => ({ ...prev, email: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      value={dealerData.phone}
+                      onChange={(e) => setDealerData(prev => ({ ...prev, phone: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="website">Website</Label>
+                    <Input
+                      id="website"
+                      value={dealerData.website}
+                      onChange={(e) => setDealerData(prev => ({ ...prev, website: e.target.value }))}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Input
+                      id="address"
+                      value={dealerData.address}
+                      onChange={(e) => setDealerData(prev => ({ ...prev, address: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="licenseNumber">License Number</Label>
+                    <Input
+                      id="licenseNumber"
+                      value={dealerData.licenseNumber}
+                      onChange={(e) => setDealerData(prev => ({ ...prev, licenseNumber: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="businessType">Business Type</Label>
+                    <Select 
+                      value={dealerData.businessType} 
+                      onValueChange={(value) => setDealerData(prev => ({ ...prev, businessType: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Franchise">Franchise</SelectItem>
+                        <SelectItem value="Independent">Independent</SelectItem>
+                        <SelectItem value="Corporate">Corporate</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={dealerData.description}
+                      onChange={(e) => setDealerData(prev => ({ ...prev, description: e.target.value }))}
+                      rows={3}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Tax ID</label>
-                  <p className="mt-1 font-medium">{dealer.taxId}</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-3">
+                    <Mail className="h-5 w-5 text-primary" />
+                    <span>{dealerData.email}</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Phone className="h-5 w-5 text-primary" />
+                    <span>{dealerData.phone}</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Globe className="h-5 w-5 text-primary" />
+                    <span>{dealerData.website}</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    <span>{dealerData.location}</span>
+                  </div>
+                  <div className="md:col-span-2">
+                    <strong>Address:</strong> {dealerData.address}
+                  </div>
+                  <div>
+                    <strong>License Number:</strong> {dealerData.licenseNumber}
+                  </div>
+                  <div>
+                    <strong>Business Type:</strong> {dealerData.businessType}
+                  </div>
+                  <div className="md:col-span-2">
+                    <strong>Description:</strong>
+                    <p className="mt-2 text-gray-700">{dealerData.description}</p>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Insurance Policy</label>
-                  <p className="mt-1 font-medium">{dealer.insurancePolicy}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Total Sales</label>
-                  <p className="mt-1 font-medium text-green-600">${(dealer.totalSales * 1000).toLocaleString()}</p>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="activity">
+          {/* Statistics */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+              <CardTitle>Performance Statistics</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Clock className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Activity Log</h3>
-                <p className="text-gray-600">Recent dealer activities will be displayed here</p>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <Car className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-secondary">{dealerData.totalVehicles}</div>
+                  <div className="text-sm text-gray-600">Total Vehicles</div>
+                </div>
+                <div className="text-center">
+                  <Award className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-secondary">{dealerData.totalSales}</div>
+                  <div className="text-sm text-gray-600">Total Sales</div>
+                </div>
+                <div className="text-center">
+                  <Star className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-secondary">{dealerData.rating}</div>
+                  <div className="text-sm text-gray-600">Average Rating</div>
+                </div>
+                <div className="text-center">
+                  <Users className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-secondary">342</div>
+                  <div className="text-sm text-gray-600">Reviews</div>
+                </div>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+
+          {/* Specialties */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Specialties</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {dealerData.specialties.map((specialty, index) => (
+                  <Badge key={index} variant="outline" className="px-3 py-1">
+                    {specialty}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Status Management */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Status Management</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Current Status</Label>
+                <Badge className={`mt-2 ${getStatusColor(dealerData.status)}`}>
+                  {dealerData.status}
+                </Badge>
+              </div>
+              <div className="space-y-2">
+                <Button 
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  onClick={() => handleStatusChange('active')}
+                  disabled={dealerData.status === 'active'}
+                >
+                  Activate Dealer
+                </Button>
+                <Button 
+                  variant="destructive"
+                  className="w-full"
+                  onClick={() => handleStatusChange('suspended')}
+                  disabled={dealerData.status === 'suspended'}
+                >
+                  Suspend Dealer
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button variant="outline" className="w-full">
+                View Vehicles
+              </Button>
+              <Button variant="outline" className="w-full">
+                View Sales History
+              </Button>
+              <Button variant="outline" className="w-full">
+                Send Message
+              </Button>
+              <Button variant="outline" className="w-full">
+                Generate Report
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Account Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+              <div>
+                <strong>Joined:</strong> {dealerData.joinDate}
+              </div>
+              <div>
+                <strong>Last Login:</strong> 2 hours ago
+              </div>
+              <div>
+                <strong>Account Type:</strong> Premium
+              </div>
+              <div>
+                <strong>Verification:</strong> Verified
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

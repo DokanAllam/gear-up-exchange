@@ -1,129 +1,134 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { AuthProvider } from "@/contexts/AuthContext";
-import Index from "./pages/Index";
-import Vehicles from "./pages/Vehicles";
-import VehicleDetail from "./pages/VehicleDetail";
-import Dealers from "./pages/Dealers";
-import DealerDetail from "./pages/DealerDetail";
-import Services from "./pages/Services";
-import ServiceDetail from "./pages/ServiceDetail";
-import Store from "./pages/Store";
-import ProductDetail from "./pages/ProductDetail";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Sell from "./pages/Sell";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Profile from "./pages/Profile";
-import EditVehicle from "./pages/EditVehicle";
-import Wishlist from "./pages/Wishlist";
-import Notifications from "./pages/Notifications";
-import NotFound from "./pages/NotFound";
-import AdminDashboard from "./pages/AdminDashboard";
-import DealerDashboard from "./pages/DealerDashboard";
-import ServiceDashboard from "./pages/ServiceDashboard";
-import Community from "./pages/Community";
-import QuestionDetail from "./pages/QuestionDetail";
-import DealerApplication from "./pages/DealerApplication";
-import ServiceApplication from "./pages/ServiceApplication";
-import TermsConditions from "./pages/TermsConditions";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Careers from "./pages/Careers";
-import JobDetail from "./pages/JobDetail";
-import LearnMore from "./pages/LearnMore";
-import ForgotPassword from "./pages/ForgotPassword";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { Toaster } from '@/components/ui/toaster';
 
-const queryClient = new QueryClient();
+// Pages
+import Index from '@/pages/Index';
+import About from '@/pages/About';
+import Vehicles from '@/pages/Vehicles';
+import VehicleDetail from '@/pages/VehicleDetail';
+import Dealers from '@/pages/Dealers';
+import DealerDetail from '@/pages/DealerDetail';
+import Services from '@/pages/Services';
+import ServiceDetail from '@/pages/ServiceDetail';
+import Store from '@/pages/Store';
+import ProductDetail from '@/pages/ProductDetail';
+import Community from '@/pages/Community';
+import QuestionDetail from '@/pages/QuestionDetail';
+import Careers from '@/pages/Careers';
+import JobDetail from '@/pages/JobDetail';
+import Contact from '@/pages/Contact';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import Profile from '@/pages/Profile';
+import Sell from '@/pages/Sell';
+import EditVehicle from '@/pages/EditVehicle';
+import Cart from '@/pages/Cart';
+import Checkout from '@/pages/Checkout';
+import Wishlist from '@/pages/Wishlist';
+import Notifications from '@/pages/Notifications';
+import DealerApplication from '@/pages/DealerApplication';
+import ServiceApplication from '@/pages/ServiceApplication';
+import DealerDashboard from '@/pages/DealerDashboard';
+import ServiceDashboard from '@/pages/ServiceDashboard';
+import LearnMore from '@/pages/LearnMore';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import TermsConditions from '@/pages/TermsConditions';
+import NotFound from '@/pages/NotFound';
 
-// Component to handle scroll to top on route change
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
+// Admin Pages
+import AdminSidebar from '@/components/AdminSidebar';
+import AdminDashboard from '@/pages/AdminDashboard';
+import AdminOverview from '@/pages/admin/AdminOverview';
+import AdminUsers from '@/pages/admin/AdminUsers';
+import AdminDealers from '@/pages/admin/AdminDealers';
+import AdminDealerDetails from '@/pages/admin/AdminDealerDetails';
+import AdminVehicles from '@/pages/admin/AdminVehicles';
+import AdminServices from '@/pages/admin/AdminServices';
+import AdminAnalytics from '@/pages/admin/AdminAnalytics';
+import AdminApprovals from '@/pages/admin/AdminApprovals';
+import AdminCommunity from '@/pages/admin/AdminCommunity';
+import AdminContent from '@/pages/admin/AdminContent';
+import AdminRoles from '@/pages/admin/AdminRoles';
+import AdminSecurity from '@/pages/admin/AdminSecurity';
+import AdminSystem from '@/pages/admin/AdminSystem';
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/vehicles" element={<Vehicles />} />
+          <Route path="/vehicles/:id" element={<VehicleDetail />} />
+          <Route path="/dealers" element={<Dealers />} />
+          <Route path="/dealers/:id" element={<DealerDetail />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/services/:id" element={<ServiceDetail />} />
+          <Route path="/store" element={<Store />} />
+          <Route path="/store/:id" element={<ProductDetail />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/community/:id" element={<QuestionDetail />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/careers/:id" element={<JobDetail />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/sell" element={<Sell />} />
+          <Route path="/edit-vehicle/:id" element={<EditVehicle />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/dealer-application" element={<DealerApplication />} />
+          <Route path="/service-application" element={<ServiceApplication />} />
+          <Route path="/dealer-dashboard" element={<DealerDashboard />} />
+          <Route path="/service-dashboard" element={<ServiceDashboard />} />
+          <Route path="/learn-more" element={<LearnMore />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
 
-  return null;
-};
+          {/* Admin Routes with Sidebar Layout */}
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route
+            path="/admin/*"
+            element={
+              <div className="flex min-h-screen w-full">
+                <AdminSidebar />
+                <div className="flex-1 w-full">
+                  <Routes>
+                    <Route path="overview" element={<AdminOverview />} />
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="dealers" element={<AdminDealers />} />
+                    <Route path="dealers/:id" element={<AdminDealerDetails />} />
+                    <Route path="vehicles" element={<AdminVehicles />} />
+                    <Route path="services" element={<AdminServices />} />
+                    <Route path="analytics" element={<AdminAnalytics />} />
+                    <Route path="approvals" element={<AdminApprovals />} />
+                    <Route path="community" element={<AdminCommunity />} />
+                    <Route path="content" element={<AdminContent />} />
+                    <Route path="roles" element={<AdminRoles />} />
+                    <Route path="security" element={<AdminSecurity />} />
+                    <Route path="system" element={<AdminSystem />} />
+                  </Routes>
+                </div>
+              </div>
+            }
+          />
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            
-            {/* Vehicle Routes */}
-            <Route path="/vehicles" element={<Vehicles />} />
-            <Route path="/vehicles/:id" element={<VehicleDetail />} />
-            <Route path="/edit-vehicle/:id" element={<EditVehicle />} />
-            
-            {/* Dealer Routes */}
-            <Route path="/dealers" element={<Dealers />} />
-            <Route path="/dealers/:id" element={<DealerDetail />} />
-            
-            {/* Service Routes */}
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/:id" element={<ServiceDetail />} />
-            
-            {/* Store Routes */}
-            <Route path="/store" element={<Store />} />
-            <Route path="/store/product/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            
-            {/* User Routes */}
-            <Route path="/sell" element={<Sell />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            
-            {/* Dashboard Routes */}
-            <Route path="/admin/*" element={<AdminDashboard />} />
-            <Route path="/dealer-dashboard" element={<DealerDashboard />} />
-            <Route path="/service-dashboard" element={<ServiceDashboard />} />
-            
-            {/* Community Routes */}
-            <Route path="/community" element={<Community />} />
-            <Route path="/community/question/:id" element={<QuestionDetail />} />
-            
-            {/* Application Routes */}
-            <Route path="/apply/dealer" element={<DealerApplication />} />
-            <Route path="/apply/service" element={<ServiceApplication />} />
-            
-            {/* Legal & Info Routes */}
-            <Route path="/terms" element={<TermsConditions />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/learn-more" element={<LearnMore />} />
-            
-            {/* Career Routes */}
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/careers/:id" element={<JobDetail />} />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+          {/* 404 Route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+      </Router>
+    </AuthProvider>
+  );
+}
 
 export default App;

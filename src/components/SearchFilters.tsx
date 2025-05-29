@@ -48,7 +48,9 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
   const handleFilterChange = (key: keyof FilterState, value: any) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
-    onFiltersChange?.(newFilters);
+    if (onFiltersChange) {
+      onFiltersChange(newFilters);
+    }
   };
 
   const clearAllFilters = () => {
@@ -64,7 +66,9 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
       location: ''
     };
     setFilters(clearedFilters);
-    onClearFilters?.();
+    if (onClearFilters) {
+      onClearFilters();
+    }
   };
 
   const getActiveFiltersCount = () => {
@@ -139,7 +143,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
             </div>
           </div>
 
-          <CollapsibleContent>
+          <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
             <div className="p-6 space-y-6">
               {/* Quick Filters */}
               <div className="flex flex-wrap gap-2 mb-4">
@@ -296,7 +300,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
               <div className="flex justify-end pt-4 border-t">
                 <Button 
                   className="px-8 py-2 bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 transition-all duration-200"
-                  onClick={() => onFiltersChange?.(filters)}
+                  onClick={() => onFiltersChange && onFiltersChange(filters)}
                 >
                   Apply Filters
                 </Button>
