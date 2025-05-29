@@ -9,13 +9,25 @@ import { Filter, X } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface SearchFiltersProps {
-  onFiltersChange?: (filters: any) => void;
+  onFiltersChange?: (filters: FilterState) => void;
   onClearFilters?: () => void;
 }
 
-const SearchFilters = ({ onFiltersChange, onClearFilters }: SearchFiltersProps) => {
+interface FilterState {
+  vehicleType: string;
+  priceRange: [number, number];
+  year: string;
+  mileage: string;
+  fuelType: string;
+  transmission: string;
+  condition: string;
+  brand: string;
+  location: string;
+}
+
+const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterState>({
     vehicleType: '',
     priceRange: [0, 100000],
     year: '',
@@ -32,16 +44,14 @@ const SearchFilters = ({ onFiltersChange, onClearFilters }: SearchFiltersProps) 
   const transmissions = ['Manual', 'Automatic'];
   const conditions = ['New', 'Used'];
 
-  const handleFilterChange = (key: string, value: any) => {
+  const handleFilterChange = (key: keyof FilterState, value: any) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
-    if (onFiltersChange) {
-      onFiltersChange(newFilters);
-    }
+    onFiltersChange?.(newFilters);
   };
 
   const clearAllFilters = () => {
-    const clearedFilters = {
+    const clearedFilters: FilterState = {
       vehicleType: '',
       priceRange: [0, 100000],
       year: '',
@@ -53,9 +63,7 @@ const SearchFilters = ({ onFiltersChange, onClearFilters }: SearchFiltersProps) 
       location: ''
     };
     setFilters(clearedFilters);
-    if (onClearFilters) {
-      onClearFilters();
-    }
+    onClearFilters?.();
   };
 
   return (
@@ -148,7 +156,7 @@ const SearchFilters = ({ onFiltersChange, onClearFilters }: SearchFiltersProps) 
                 </label>
                 <Slider
                   value={filters.priceRange}
-                  onValueChange={(value) => handleFilterChange('priceRange', value)}
+                  onValueChange={(value) => handleFilterChange('priceRange', value as [number, number])}
                   max={200000}
                   min={0}
                   step={5000}

@@ -109,10 +109,18 @@ const AdminSidebar = () => {
             <SidebarMenu>
               {adminMenuItems.map((item) => {
                 const Icon = item.icon;
+                const active = isActive(item.url);
                 return (
                   <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                      <NavLink to={item.url} className="flex items-center">
+                    <SidebarMenuButton asChild isActive={active}>
+                      <NavLink 
+                        to={item.url} 
+                        className={`flex items-center ${
+                          active 
+                            ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                            : 'hover:bg-accent hover:text-accent-foreground'
+                        }`}
+                      >
                         <Icon className="h-4 w-4" />
                         {!isCollapsed && <span>{item.title}</span>}
                       </NavLink>

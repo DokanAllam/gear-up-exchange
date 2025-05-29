@@ -5,14 +5,35 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Search, Plus, Edit, Trash2, Eye, UserCheck, UserX } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  joinDate: string;
+  lastActive: string;
+  phone?: string;
+  address?: string;
+}
+
 const AdminUsers = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'view' | 'edit' | 'create'>('view');
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const users = [
+  const [users, setUsers] = useState<User[]>([
     {
       id: '1',
       name: 'John Doe',
@@ -20,7 +41,9 @@ const AdminUsers = () => {
       role: 'Customer',
       status: 'Active',
       joinDate: '2024-01-15',
-      lastActive: '2024-01-20'
+      lastActive: '2024-01-20',
+      phone: '+1-555-0123',
+      address: '123 Main St, New York, NY'
     },
     {
       id: '2',
@@ -29,7 +52,9 @@ const AdminUsers = () => {
       role: 'Dealer',
       status: 'Active',
       joinDate: '2024-01-10',
-      lastActive: '2024-01-19'
+      lastActive: '2024-01-19',
+      phone: '+1-555-0456',
+      address: '456 Oak Ave, Los Angeles, CA'
     },
     {
       id: '3',
@@ -38,15 +63,93 @@ const AdminUsers = () => {
       role: 'Service Provider',
       status: 'Suspended',
       joinDate: '2024-01-05',
-      lastActive: '2024-01-18'
+      lastActive: '2024-01-18',
+      phone: '+1-555-0789',
+      address: '789 Pine St, Chicago, IL'
     }
-  ];
+  ]);
 
   const handleUserAction = (action: string, userId: string) => {
-    toast({
-      title: `User ${action}`,
-      description: `User ${userId} has been ${action.toLowerCase()}.`,
-    });
+    switch (action) {
+      case 'View':
+        const viewUser = users.find(u => u.id === userId);
+        if (viewUser) {
+          setSelectedUser(viewUser);
+          setModalType('view');
+          setIsModalOpen(true);
+        }
+        break;
+      case 'Edit':
+        const editUser = users.find(u => u.id === userId);
+        if (editUser) {
+          setSelectedUser(editUser);
+          setModalType('edit');
+          setIsModalOpen(true);
+        }
+        break;
+      case 'Add':
+        setSelectedUser(null);
+        setModalType('create');
+        setIsModalOpen(true);
+        break;
+      case 'Delete':
+        setUserToDelete(userId);
+        setIsDeleteDialogOpen(true);
+        break;
+      case 'Suspend':
+        setUsers(users.map(u => u.id === userId ? {...u, status: 'Suspended'} : u));
+        toast({
+          title: 'User Suspended',
+          description: `User has been suspended successfully.`,
+        });
+        break;
+      case 'Activate':
+        setUsers(users.map(u => u.id === userId ? {...u, status: 'Active'} : u));
+        toast({
+          title: 'User Activated',
+          description: `User has been activated successfully.`,
+        });
+        break;
+    }
+  };
+
+  const handleSaveUser = () => {
+    if (modalType === 'create') {
+      const newUser: User = {
+        id: (users.length + 1).toString(),
+        name: 'New User',
+        email: 'new@example.com',
+        role: 'Customer',
+        status: 'Active',
+        joinDate: new Date().toISOString().split('T')[0],
+        lastActive: new Date().toISOString().split('T')[0]
+      };
+      setUsers([...users, newUser]);
+      toast({
+        title: 'User Created',
+        description: 'New user has been created successfully.',
+      });
+    } else if (modalType === 'edit' && selectedUser) {
+      setUsers(users.map(u => u.id === selectedUser.id ? selectedUser : u));
+      toast({
+        title: 'User Updated',
+        description: 'User has been updated successfully.',
+      });
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteUser = () => {
+    if (userToDelete) {
+      setUsers(users.filter(u => u.id !== userToDelete));
+      toast({
+        title: 'User Deleted',
+        description: 'User has been deleted successfully.',
+        variant: 'destructive'
+      });
+    }
+    setIsDeleteDialogOpen(false);
+    setUserToDelete(null);
   };
 
   const getRoleColor = (role: string) => {
@@ -67,11 +170,16 @@ const AdminUsers = () => {
     }
   };
 
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">User Management</h1>
-        <Button className="btn-primary">
+        <Button className="btn-primary" onClick={() => handleUserAction('Add', '')}>
           <Plus className="h-4 w-4 mr-2" />
           Add User
         </Button>
@@ -81,25 +189,25 @@ const AdminUsers = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardContent className="p-6">
-            <div className="text-2xl font-bold text-primary">1,234</div>
+            <div className="text-2xl font-bold text-primary">{users.length}</div>
             <p className="text-gray-600">Total Users</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
-            <div className="text-2xl font-bold text-green-600">1,180</div>
+            <div className="text-2xl font-bold text-green-600">{users.filter(u => u.status === 'Active').length}</div>
             <p className="text-gray-600">Active Users</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
-            <div className="text-2xl font-bold text-yellow-600">32</div>
+            <div className="text-2xl font-bold text-yellow-600">{users.filter(u => u.status === 'Pending').length}</div>
             <p className="text-gray-600">Pending Approval</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
-            <div className="text-2xl font-bold text-red-600">22</div>
+            <div className="text-2xl font-bold text-red-600">{users.filter(u => u.status === 'Suspended').length}</div>
             <p className="text-gray-600">Suspended</p>
           </CardContent>
         </Card>
@@ -135,7 +243,7 @@ const AdminUsers = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
@@ -179,6 +287,106 @@ const AdminUsers = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* User Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {modalType === 'create' && 'Add New User'}
+              {modalType === 'edit' && 'Edit User'}
+              {modalType === 'view' && 'User Details'}
+            </DialogTitle>
+            <DialogDescription>
+              {modalType === 'view' && 'View user information'}
+              {modalType === 'edit' && 'Update user information'}
+              {modalType === 'create' && 'Create a new user account'}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">Name</Label>
+              <Input
+                id="name"
+                value={selectedUser?.name || ''}
+                onChange={(e) => selectedUser && setSelectedUser({...selectedUser, name: e.target.value})}
+                className="col-span-3"
+                disabled={modalType === 'view'}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="text-right">Email</Label>
+              <Input
+                id="email"
+                value={selectedUser?.email || ''}
+                onChange={(e) => selectedUser && setSelectedUser({...selectedUser, email: e.target.value})}
+                className="col-span-3"
+                disabled={modalType === 'view'}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="role" className="text-right">Role</Label>
+              <Select
+                value={selectedUser?.role || ''}
+                onValueChange={(value) => selectedUser && setSelectedUser({...selectedUser, role: value})}
+                disabled={modalType === 'view'}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Customer">Customer</SelectItem>
+                  <SelectItem value="Dealer">Dealer</SelectItem>
+                  <SelectItem value="Service Provider">Service Provider</SelectItem>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {modalType === 'view' && (
+              <>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label className="text-right">Phone</Label>
+                  <span className="col-span-3 text-sm">{selectedUser?.phone || 'N/A'}</span>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label className="text-right">Address</Label>
+                  <span className="col-span-3 text-sm">{selectedUser?.address || 'N/A'}</span>
+                </div>
+              </>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            {modalType !== 'view' && (
+              <Button onClick={handleSaveUser}>
+                {modalType === 'create' ? 'Create User' : 'Save Changes'}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the user account and remove all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteUser} className="bg-red-600 hover:bg-red-700">
+              Delete User
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
