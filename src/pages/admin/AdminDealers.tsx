@@ -18,7 +18,8 @@ import {
   Mail,
   Star,
   Car,
-  Calendar
+  Calendar,
+  Clock
 } from 'lucide-react';
 
 const AdminDealers = () => {
@@ -282,7 +283,6 @@ const AdminDealers = () => {
         </CardContent>
       </Card>
 
-      {/* Dealer Details Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>

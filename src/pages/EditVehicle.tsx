@@ -69,11 +69,13 @@ const EditVehicle = () => {
   };
 
   const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files);
+    const files = Array.from(event.target.files) as File[];
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setImages(prev => [...prev, e.target.result]);
+        if (e.target?.result) {
+          setImages(prev => [...prev, e.target.result as string]);
+        }
       };
       reader.readAsDataURL(file);
     });
@@ -280,7 +282,6 @@ const EditVehicle = () => {
                 </div>
               </div>
 
-              {/* Description */}
               <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea
@@ -292,7 +293,6 @@ const EditVehicle = () => {
                 />
               </div>
 
-              {/* Action Buttons */}
               <div className="flex justify-end space-x-4 pt-6 border-t">
                 <Button variant="outline" onClick={() => navigate('/profile')}>
                   Cancel

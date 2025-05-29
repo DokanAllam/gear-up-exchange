@@ -9,8 +9,8 @@ import { Filter, X } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface SearchFiltersProps {
-  onFiltersChange: (filters: any) => void;
-  onClearFilters: () => void;
+  onFiltersChange?: (filters: any) => void;
+  onClearFilters?: () => void;
 }
 
 const SearchFilters = ({ onFiltersChange, onClearFilters }: SearchFiltersProps) => {
