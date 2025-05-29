@@ -23,14 +23,39 @@ import {
   UserCheck
 } from 'lucide-react';
 
+interface Permission {
+  id: string;
+  name: string;
+  category: string;
+}
+
+interface Role {
+  id: string;
+  name: string;
+  description: string;
+  userCount: number;
+  status: string;
+  createdAt: string;
+  permissions: string[];
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  lastLogin: string;
+}
+
 const AdminRoles = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('view'); // 'view', 'edit', 'create'
+  const [modalType, setModalType] = useState<'view' | 'edit' | 'create'>('view');
 
   // Mock roles and permissions data
-  const roles = [
+  const roles: Role[] = [
     {
       id: '1',
       name: 'Super Admin',
@@ -78,7 +103,7 @@ const AdminRoles = () => {
     }
   ];
 
-  const allPermissions = [
+  const allPermissions: Permission[] = [
     { id: 'user_management', name: 'User Management', category: 'Users' },
     { id: 'basic_user_management', name: 'Basic User Management', category: 'Users' },
     { id: 'user_support', name: 'User Support', category: 'Users' },
@@ -94,7 +119,7 @@ const AdminRoles = () => {
     { id: 'security_settings', name: 'Security Settings', category: 'System' }
   ];
 
-  const users = [
+  const users: User[] = [
     {
       id: '1',
       name: 'John Admin',
@@ -121,7 +146,7 @@ const AdminRoles = () => {
     }
   ];
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
         return 'bg-green-100 text-green-800';
@@ -132,24 +157,24 @@ const AdminRoles = () => {
     }
   };
 
-  const handleOpenModal = (role, type) => {
+  const handleOpenModal = (role: Role | null, type: 'view' | 'edit' | 'create') => {
     setSelectedRole(role);
     setModalType(type);
     setIsModalOpen(true);
   };
 
-  const handleAction = (action, itemId) => {
+  const handleAction = (action: string, itemId?: string) => {
     console.log(`${action} item:`, itemId);
     setIsModalOpen(false);
   };
 
-  const groupedPermissions = allPermissions.reduce((acc, permission) => {
+  const groupedPermissions: Record<string, Permission[]> = allPermissions.reduce((acc, permission) => {
     if (!acc[permission.category]) {
       acc[permission.category] = [];
     }
     acc[permission.category].push(permission);
     return acc;
-  }, {});
+  }, {} as Record<string, Permission[]>);
 
   return (
     <div className="p-6">
