@@ -20,24 +20,26 @@ import AdminSystem from './admin/AdminSystem';
 const AdminDashboard = () => {
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-gray-50 w-full">
+      <div className="flex min-h-screen bg-gray-50 w-full">
         <AdminSidebar />
-        <main className="flex-1 overflow-auto w-full">
-          <Routes>
-            <Route path="/" element={<AdminOverview />} />
-            <Route path="/users" element={<AdminUsers />} />
-            <Route path="/vehicles" element={<AdminVehicles />} />
-            <Route path="/dealers" element={<AdminDealers />} />
-            <Route path="/dealers/:id" element={<AdminDealerDetails />} />
-            <Route path="/services" element={<AdminServices />} />
-            <Route path="/approvals" element={<AdminApprovals />} />
-            <Route path="/community" element={<AdminCommunity />} />
-            <Route path="/analytics" element={<AdminAnalytics />} />
-            <Route path="/content" element={<AdminContent />} />
-            <Route path="/roles" element={<AdminRoles />} />
-            <Route path="/security" element={<AdminSecurity />} />
-            <Route path="/system" element={<AdminSystem />} />
-          </Routes>
+        <main className="flex-1 w-full">
+          <div className="w-full">
+            <Routes>
+              <Route path="/" element={<AdminOverview />} />
+              <Route path="/users" element={<AdminUsers />} />
+              <Route path="/vehicles" element={<AdminVehicles />} />
+              <Route path="/dealers" element={<AdminDealers />} />
+              <Route path="/dealers/:id" element={<AdminDealerDetails />} />
+              <Route path="/services" element={<AdminServices />} />
+              <Route path="/approvals" element={<AdminApprovals />} />
+              <Route path="/community" element={<AdminCommunity />} />
+              <Route path="/analytics" element={<AdminAnalytics />} />
+              <Route path="/content" element={<AdminContent />} />
+              <Route path="/roles" element={<AdminRoles />} />
+              <Route path="/security" element={<AdminSecurity />} />
+              <Route path="/system" element={<AdminSystem />} />
+            </Routes>
+          </div>
         </main>
       </div>
     </SidebarProvider>

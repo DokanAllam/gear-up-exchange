@@ -143,166 +143,163 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
           </div>
 
           <CollapsibleContent>
-            {isOpen && (
-              <div className="p-6 space-y-6">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge 
-                    variant={filters.vehicleType === 'car' ? 'default' : 'outline'} 
-                    className="cursor-pointer px-3 py-1 hover:bg-primary/10 transition-colors"
-                    onClick={() => handleFilterChange('vehicleType', filters.vehicleType === 'car' ? '' : 'car')}
-                  >
-                    <Car className="h-3 w-3 mr-1" />
-                    Cars
-                  </Badge>
-                  <Badge 
-                    variant={filters.condition === 'new' ? 'default' : 'outline'} 
-                    className="cursor-pointer px-3 py-1 hover:bg-primary/10 transition-colors"
-                    onClick={() => handleFilterChange('condition', filters.condition === 'new' ? '' : 'new')}
-                  >
-                    New
-                  </Badge>
-                  <Badge 
-                    variant={filters.fuelType === 'Electric' ? 'default' : 'outline'} 
-                    className="cursor-pointer px-3 py-1 hover:bg-primary/10 transition-colors"
-                    onClick={() => handleFilterChange('fuelType', filters.fuelType === 'Electric' ? '' : 'Electric')}
-                  >
-                    <Fuel className="h-3 w-3 mr-1" />
-                    Electric
-                  </Badge>
+            <div className="p-6 space-y-6">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge 
+                  variant={filters.vehicleType === 'car' ? 'default' : 'outline'} 
+                  className="cursor-pointer px-3 py-1 hover:bg-primary/10 transition-colors"
+                  onClick={() => handleFilterChange('vehicleType', filters.vehicleType === 'car' ? '' : 'car')}
+                >
+                  <Car className="h-3 w-3 mr-1" />
+                  Cars
+                </Badge>
+                <Badge 
+                  variant={filters.condition === 'new' ? 'default' : 'outline'} 
+                  className="cursor-pointer px-3 py-1 hover:bg-primary/10 transition-colors"
+                  onClick={() => handleFilterChange('condition', filters.condition === 'new' ? '' : 'new')}
+                >
+                  New
+                </Badge>
+                <Badge 
+                  variant={filters.fuelType === 'Electric' ? 'default' : 'outline'} 
+                  className="cursor-pointer px-3 py-1 hover:bg-primary/10 transition-colors"
+                  onClick={() => handleFilterChange('fuelType', filters.fuelType === 'Electric' ? '' : 'Electric')}
+                >
+                  <Fuel className="h-3 w-3 mr-1" />
+                  Electric
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                    <Car className="h-4 w-4 mr-2 text-primary" />
+                    Vehicle Type
+                  </label>
+                  <Select value={filters.vehicleType} onValueChange={(value) => handleFilterChange('vehicleType', value)}>
+                    <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
+                      <SelectValue placeholder="All Types" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Types</SelectItem>
+                      <SelectItem value="car">Cars</SelectItem>
+                      <SelectItem value="bike">Bikes</SelectItem>
+                      <SelectItem value="motorcycle">Motorcycles</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="space-y-2">
-                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                      <Car className="h-4 w-4 mr-2 text-primary" />
-                      Vehicle Type
-                    </label>
-                    <Select value={filters.vehicleType} onValueChange={(value) => handleFilterChange('vehicleType', value)}>
-                      <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
-                        <SelectValue placeholder="All Types" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Types</SelectItem>
-                        <SelectItem value="car">Cars</SelectItem>
-                        <SelectItem value="bike">Bikes</SelectItem>
-                        <SelectItem value="motorcycle">Motorcycles</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                    <Settings className="h-4 w-4 mr-2 text-primary" />
+                    Brand
+                  </label>
+                  <Select value={filters.brand} onValueChange={(value) => handleFilterChange('brand', value)}>
+                    <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
+                      <SelectValue placeholder="All Brands" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Brands</SelectItem>
+                      {brands.map((brand) => (
+                        <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <div className="space-y-2">
-                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                      <Settings className="h-4 w-4 mr-2 text-primary" />
-                      Brand
-                    </label>
-                    <Select value={filters.brand} onValueChange={(value) => handleFilterChange('brand', value)}>
-                      <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
-                        <SelectValue placeholder="All Brands" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Brands</SelectItem>
-                        {brands.map((brand) => (
-                          <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                    Condition
+                  </label>
+                  <Select value={filters.condition} onValueChange={(value) => handleFilterChange('condition', value)}>
+                    <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
+                      <SelectValue placeholder="All Conditions" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Conditions</SelectItem>
+                      {conditions.map((condition) => (
+                        <SelectItem key={condition} value={condition.toLowerCase()}>{condition}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <div className="space-y-2">
-                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                      <Badge className="h-4 w-4 mr-2 text-primary" />
-                      Condition
-                    </label>
-                    <Select value={filters.condition} onValueChange={(value) => handleFilterChange('condition', value)}>
-                      <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
-                        <SelectValue placeholder="All Conditions" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Conditions</SelectItem>
-                        {conditions.map((condition) => (
-                          <SelectItem key={condition} value={condition.toLowerCase()}>{condition}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                    <Fuel className="h-4 w-4 mr-2 text-primary" />
+                    Fuel Type
+                  </label>
+                  <Select value={filters.fuelType} onValueChange={(value) => handleFilterChange('fuelType', value)}>
+                    <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
+                      <SelectValue placeholder="All Fuel Types" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Fuel Types</SelectItem>
+                      {fuelTypes.map((fuel) => (
+                        <SelectItem key={fuel} value={fuel}>{fuel}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <div className="space-y-2">
-                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                      <Fuel className="h-4 w-4 mr-2 text-primary" />
-                      Fuel Type
-                    </label>
-                    <Select value={filters.fuelType} onValueChange={(value) => handleFilterChange('fuelType', value)}>
-                      <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
-                        <SelectValue placeholder="All Fuel Types" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Fuel Types</SelectItem>
-                        {fuelTypes.map((fuel) => (
-                          <SelectItem key={fuel} value={fuel}>{fuel}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="md:col-span-2 space-y-3">
-                    <label className="flex items-center text-sm font-medium text-gray-700">
-                      <DollarSign className="h-4 w-4 mr-2 text-primary" />
-                      Price Range: ${filters.priceRange[0].toLocaleString()} - ${filters.priceRange[1].toLocaleString()}
-                    </label>
-                    <div className="px-3">
-                      <Slider
-                        value={filters.priceRange}
-                        onValueChange={(value) => handleFilterChange('priceRange', value as [number, number])}
-                        max={200000}
-                        min={0}
-                        step={5000}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>$0</span>
-                      <span>$200,000</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                      <Calendar className="h-4 w-4 mr-2 text-primary" />
-                      Year
-                    </label>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 2020"
-                      value={filters.year}
-                      onChange={(e) => handleFilterChange('year', e.target.value)}
-                      className="h-11 border-gray-200 focus:border-primary transition-colors"
+                <div className="md:col-span-2 space-y-3">
+                  <label className="flex items-center text-sm font-medium text-gray-700">
+                    <DollarSign className="h-4 w-4 mr-2 text-primary" />
+                    Price Range: ${filters.priceRange[0].toLocaleString()} - ${filters.priceRange[1].toLocaleString()}
+                  </label>
+                  <div className="px-3">
+                    <Slider
+                      value={filters.priceRange}
+                      onValueChange={(value) => handleFilterChange('priceRange', value as [number, number])}
+                      max={200000}
+                      min={0}
+                      step={5000}
+                      className="w-full"
                     />
                   </div>
-
-                  <div className="space-y-2">
-                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                      <MapPin className="h-4 w-4 mr-2 text-primary" />
-                      Location
-                    </label>
-                    <Input
-                      placeholder="City, State"
-                      value={filters.location}
-                      onChange={(e) => handleFilterChange('location', e.target.value)}
-                      className="h-11 border-gray-200 focus:border-primary transition-colors"
-                    />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>$0</span>
+                    <span>$200,000</span>
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-4 border-t">
-                  <Button 
-                    className="px-8 py-2 bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 transition-all duration-200"
-                    onClick={() => onFiltersChange && onFiltersChange(filters)}
-                  >
-                    Apply Filters
-                  </Button>
+                <div className="space-y-2">
+                  <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                    <Calendar className="h-4 w-4 mr-2 text-primary" />
+                    Year
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="e.g. 2020"
+                    value={filters.year}
+                    onChange={(e) => handleFilterChange('year', e.target.value)}
+                    className="h-11 border-gray-200 focus:border-primary transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                    <MapPin className="h-4 w-4 mr-2 text-primary" />
+                    Location
+                  </label>
+                  <Input
+                    placeholder="City, State"
+                    value={filters.location}
+                    onChange={(e) => handleFilterChange('location', e.target.value)}
+                    className="h-11 border-gray-200 focus:border-primary transition-colors"
+                  />
                 </div>
               </div>
-            )}
+
+              <div className="flex justify-end pt-4 border-t">
+                <Button 
+                  className="px-8 py-2 bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 transition-all duration-200"
+                  onClick={() => onFiltersChange && onFiltersChange(filters)}
+                >
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
           </CollapsibleContent>
         </Collapsible>
       </CardContent>

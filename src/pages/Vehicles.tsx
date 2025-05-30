@@ -15,6 +15,7 @@ const Vehicles = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [loading, setLoading] = useState(false);
   const [comparisonVehicles, setComparisonVehicles] = useState<any[]>([]);
+  const [filteredVehicles, setFilteredVehicles] = useState<any[]>([]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -37,7 +38,8 @@ const Vehicles = () => {
       reviewCount: 12,
       condition: 'used' as const,
       dealerName: 'BMW Manhattan',
-      type: 'car' as const
+      type: 'car' as const,
+      brand: 'BMW'
     },
     {
       id: '2',
@@ -53,7 +55,8 @@ const Vehicles = () => {
       reviewCount: 8,
       condition: 'new' as const,
       dealerName: 'HD Los Angeles',
-      type: 'motorcycle' as const
+      type: 'motorcycle' as const,
+      brand: 'Harley Davidson'
     },
     {
       id: '3',
@@ -69,7 +72,8 @@ const Vehicles = () => {
       reviewCount: 25,
       condition: 'used' as const,
       dealerName: 'Tesla SF',
-      type: 'car' as const
+      type: 'car' as const,
+      brand: 'Tesla'
     },
     {
       id: '4',
@@ -85,14 +89,61 @@ const Vehicles = () => {
       reviewCount: 18,
       condition: 'used' as const,
       dealerName: 'Toyota Miami',
-      type: 'car' as const
+      type: 'car' as const,
+      brand: 'Toyota'
     }
   ];
 
+  // Initialize filtered vehicles
+  useEffect(() => {
+    setFilteredVehicles(vehicles);
+  }, []);
+
   const handleFiltersChange = (filters: any) => {
     setLoading(true);
-    // Simulate API call
+    
+    // Apply filters to vehicles
     setTimeout(() => {
+      let filtered = vehicles.filter(vehicle => {
+        // Filter by vehicle type
+        if (filters.vehicleType && vehicle.type !== filters.vehicleType) {
+          return false;
+        }
+        
+        // Filter by brand
+        if (filters.brand && vehicle.brand !== filters.brand) {
+          return false;
+        }
+        
+        // Filter by condition
+        if (filters.condition && vehicle.condition !== filters.condition) {
+          return false;
+        }
+        
+        // Filter by fuel type
+        if (filters.fuelType && vehicle.fuelType !== filters.fuelType) {
+          return false;
+        }
+        
+        // Filter by year
+        if (filters.year && vehicle.year.toString() !== filters.year) {
+          return false;
+        }
+        
+        // Filter by price range
+        if (vehicle.price < filters.priceRange[0] || vehicle.price > filters.priceRange[1]) {
+          return false;
+        }
+        
+        // Filter by location
+        if (filters.location && !vehicle.location.toLowerCase().includes(filters.location.toLowerCase())) {
+          return false;
+        }
+        
+        return true;
+      });
+      
+      setFilteredVehicles(filtered);
       setLoading(false);
     }, 1000);
   };
@@ -100,6 +151,7 @@ const Vehicles = () => {
   const handleClearFilters = () => {
     setLoading(true);
     setTimeout(() => {
+      setFilteredVehicles(vehicles);
       setLoading(false);
     }, 500);
   };
@@ -136,7 +188,7 @@ const Vehicles = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <p className="text-gray-600">
-                Showing <span className="font-semibold">{vehicles.length}</span> vehicles
+                Showing <span className="font-semibold">{filteredVehicles.length}</span> of <span className="font-semibold">{vehicles.length}</span> vehicles
               </p>
               
               <div className="flex items-center space-x-2">
@@ -184,7 +236,7 @@ const Vehicles = () => {
                 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
                 : 'grid-cols-1'
             }`}>
-              {vehicles.map((vehicle, index) => (
+              {filteredVehicles.map((vehicle, index) => (
                 <div
                   key={vehicle.id}
                   className="animate-scale-in"
@@ -206,6 +258,16 @@ const Vehicles = () => {
             </div>
           )}
 
+          {/* No results message */}
+          {!loading && filteredVehicles.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-600 mb-4">No vehicles found matching your filters</p>
+              <Button onClick={handleClearFilters} variant="outline">
+                Clear Filters
+              </Button>
+            </div>
+          )}
+
           {/* Vehicle Comparison */}
           <VehicleComparison
             vehicles={comparisonVehicles}
@@ -214,7 +276,7 @@ const Vehicles = () => {
           />
 
           {/* Load More */}
-          {!loading && (
+          {!loading && filteredVehicles.length > 0 && (
             <div className="text-center mt-8">
               <Button className="btn-primary">
                 Load More Vehicles
