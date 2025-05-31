@@ -145,7 +145,6 @@ const VehicleFilters: React.FC<VehicleFiltersProps> = ({
         }}
         onClearFilters={clearFilters}
         initialFilters={currentFilters}
-        getActiveFiltersCount={getActiveFiltersCount}
       />
     </>
   );
