@@ -1,14 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
 import VehicleCard from '@/components/VehicleCard';
 import SearchFilters from '@/components/SearchFilters';
+import FilterPopup from '@/components/FilterPopup';
 import VehicleComparison from '@/components/VehicleComparison';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Grid, List } from 'lucide-react';
+import { Grid, List, Filter } from 'lucide-react';
 
 const Vehicles = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -16,6 +16,18 @@ const Vehicles = () => {
   const [loading, setLoading] = useState(false);
   const [comparisonVehicles, setComparisonVehicles] = useState<any[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<any[]>([]);
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
+  const [currentFilters, setCurrentFilters] = useState<any>({
+    vehicleType: '',
+    priceRange: [0, 100000],
+    year: '',
+    mileage: '',
+    fuelType: '',
+    transmission: '',
+    condition: '',
+    brand: '',
+    location: ''
+  });
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -101,6 +113,7 @@ const Vehicles = () => {
 
   const handleFiltersChange = (filters: any) => {
     setLoading(true);
+    setCurrentFilters(filters);
     
     // Apply filters to vehicles
     setTimeout(() => {
@@ -150,10 +163,34 @@ const Vehicles = () => {
 
   const handleClearFilters = () => {
     setLoading(true);
+    const clearedFilters = {
+      vehicleType: '',
+      priceRange: [0, 100000],
+      year: '',
+      mileage: '',
+      fuelType: '',
+      transmission: '',
+      condition: '',
+      brand: '',
+      location: ''
+    };
+    setCurrentFilters(clearedFilters);
     setTimeout(() => {
       setFilteredVehicles(vehicles);
       setLoading(false);
     }, 500);
+  };
+
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (currentFilters.vehicleType) count++;
+    if (currentFilters.brand) count++;
+    if (currentFilters.condition) count++;
+    if (currentFilters.fuelType) count++;
+    if (currentFilters.year) count++;
+    if (currentFilters.location) count++;
+    if (currentFilters.priceRange[0] > 0 || currentFilters.priceRange[1] < 100000) count++;
+    return count;
   };
 
   const addToComparison = (vehicle: any) => {
@@ -205,6 +242,22 @@ const Vehicles = () => {
                   onClick={() => setViewMode('list')}
                 >
                   <List className="h-4 w-4" />
+                </Button>
+                
+                {/* Enhanced Filter Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsFilterPopupOpen(true)}
+                  className="ml-2 border-primary/20 hover:bg-primary/5 transition-all duration-200"
+                >
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filters
+                  {getActiveFiltersCount() > 0 && (
+                    <span className="ml-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {getActiveFiltersCount()}
+                    </span>
+                  )}
                 </Button>
               </div>
             </div>
@@ -287,6 +340,15 @@ const Vehicles = () => {
       </main>
 
       <Footer />
+
+      {/* Filter Popup */}
+      <FilterPopup
+        isOpen={isFilterPopupOpen}
+        onClose={() => setIsFilterPopupOpen(false)}
+        onApplyFilters={handleFiltersChange}
+        onClearFilters={handleClearFilters}
+        initialFilters={currentFilters}
+      />
     </div>
   );
 };
