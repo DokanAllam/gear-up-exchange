@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,6 +35,8 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
   onClearFilters,
   initialFilters
 }) => {
+  console.log('FilterPopup rendering, isOpen:', isOpen);
+  
   const [filters, setFilters] = useState<FilterState>(
     initialFilters || {
       vehicleType: '',
@@ -49,21 +51,31 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
     }
   );
 
+  // Update filters when initialFilters change
+  useEffect(() => {
+    if (initialFilters) {
+      console.log('Updating filters with initialFilters:', initialFilters);
+      setFilters(initialFilters);
+    }
+  }, [initialFilters]);
+
   const brands = ['BMW', 'Mercedes', 'Toyota', 'Honda', 'Ford', 'Chevrolet', 'Audi', 'Porsche', 'Tesla', 'Harley Davidson'];
   const fuelTypes = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
   const transmissions = ['Manual', 'Automatic'];
   const conditions = ['New', 'Used'];
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
+    console.log('Filter change:', key, value);
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const handleApply = () => {
+    console.log('Applying filters:', filters);
     onApplyFilters(filters);
-    onClose();
   };
 
   const handleClear = () => {
+    console.log('Clearing filters');
     const clearedFilters: FilterState = {
       vehicleType: '',
       priceRange: [0, 100000],
@@ -91,9 +103,11 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
     return count;
   };
 
+  console.log('FilterPopup about to render Dialog');
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -161,7 +175,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
                 <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white z-50">
                   <SelectItem value="">All Types</SelectItem>
                   <SelectItem value="car">Cars</SelectItem>
                   <SelectItem value="bike">Bikes</SelectItem>
@@ -179,7 +193,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
                 <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                   <SelectValue placeholder="All Brands" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white z-50">
                   <SelectItem value="">All Brands</SelectItem>
                   {brands.map((brand) => (
                     <SelectItem key={brand} value={brand}>{brand}</SelectItem>
@@ -196,7 +210,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
                 <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                   <SelectValue placeholder="All Conditions" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white z-50">
                   <SelectItem value="">All Conditions</SelectItem>
                   {conditions.map((condition) => (
                     <SelectItem key={condition} value={condition.toLowerCase()}>{condition}</SelectItem>
@@ -214,7 +228,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
                 <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                   <SelectValue placeholder="All Fuel Types" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white z-50">
                   <SelectItem value="">All Fuel Types</SelectItem>
                   {fuelTypes.map((fuel) => (
                     <SelectItem key={fuel} value={fuel}>{fuel}</SelectItem>
@@ -231,7 +245,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
                 <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                   <SelectValue placeholder="All Transmissions" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white z-50">
                   <SelectItem value="">All Transmissions</SelectItem>
                   {transmissions.map((transmission) => (
                     <SelectItem key={transmission} value={transmission}>{transmission}</SelectItem>
