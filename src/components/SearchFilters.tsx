@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +11,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 interface SearchFiltersProps {
   onFiltersChange?: (filters: FilterState) => void;
   onClearFilters?: () => void;
+  initialFilters?: FilterState;
 }
 
 interface FilterState {
@@ -26,19 +26,33 @@ interface FilterState {
   location: string;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearFilters }) => {
+const SearchFilters: React.FC<SearchFiltersProps> = ({ 
+  onFiltersChange, 
+  onClearFilters, 
+  initialFilters 
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [filters, setFilters] = useState<FilterState>({
-    vehicleType: '',
-    priceRange: [0, 100000],
-    year: '',
-    mileage: '',
-    fuelType: '',
-    transmission: '',
-    condition: '',
-    brand: '',
-    location: ''
-  });
+  const [filters, setFilters] = useState<FilterState>(
+    initialFilters || {
+      vehicleType: '',
+      priceRange: [0, 100000],
+      year: '',
+      mileage: '',
+      fuelType: '',
+      transmission: '',
+      condition: '',
+      brand: '',
+      location: ''
+    }
+  );
+
+  // Update filters when initialFilters change
+  useEffect(() => {
+    if (initialFilters) {
+      console.log('SearchFilters: Updating with initial filters:', initialFilters);
+      setFilters(initialFilters);
+    }
+  }, [initialFilters]);
 
   const brands = ['BMW', 'Mercedes', 'Toyota', 'Honda', 'Ford', 'Chevrolet', 'Audi', 'Porsche'];
   const fuelTypes = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
@@ -46,6 +60,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
   const conditions = ['New', 'Used'];
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
+    console.log('SearchFilters: Filter change:', key, value);
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     if (onFiltersChange) {
@@ -54,6 +69,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
   };
 
   const clearAllFilters = () => {
+    console.log('SearchFilters: Clearing all filters');
     const clearedFilters: FilterState = {
       vehicleType: '',
       priceRange: [0, 100000],
@@ -180,7 +196,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
                     <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                       <SelectValue placeholder="All Types" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white z-50">
                       <SelectItem value="">All Types</SelectItem>
                       <SelectItem value="car">Cars</SelectItem>
                       <SelectItem value="bike">Bikes</SelectItem>
@@ -198,7 +214,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
                     <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                       <SelectValue placeholder="All Brands" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white z-50">
                       <SelectItem value="">All Brands</SelectItem>
                       {brands.map((brand) => (
                         <SelectItem key={brand} value={brand}>{brand}</SelectItem>
@@ -215,7 +231,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
                     <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                       <SelectValue placeholder="All Conditions" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white z-50">
                       <SelectItem value="">All Conditions</SelectItem>
                       {conditions.map((condition) => (
                         <SelectItem key={condition} value={condition.toLowerCase()}>{condition}</SelectItem>
@@ -233,7 +249,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onClearF
                     <SelectTrigger className="h-11 border-gray-200 focus:border-primary transition-colors">
                       <SelectValue placeholder="All Fuel Types" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white z-50">
                       <SelectItem value="">All Fuel Types</SelectItem>
                       {fuelTypes.map((fuel) => (
                         <SelectItem key={fuel} value={fuel}>{fuel}</SelectItem>

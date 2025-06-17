@@ -48,6 +48,7 @@ const VehicleFilters: React.FC<VehicleFiltersProps> = ({
   }, [vehicles, onFilteredVehiclesChange]);
 
   const applyFilters = (filters: FilterState) => {
+    console.log('VehicleFilters: Applying filters:', filters);
     onLoadingChange(true);
     setCurrentFilters(filters);
     
@@ -92,12 +93,14 @@ const VehicleFilters: React.FC<VehicleFiltersProps> = ({
         return true;
       });
       
+      console.log('VehicleFilters: Filtered results:', filtered.length, 'vehicles');
       onFilteredVehiclesChange(filtered);
       onLoadingChange(false);
     }, 1000);
   };
 
   const clearFilters = () => {
+    console.log('VehicleFilters: Clearing filters');
     onLoadingChange(true);
     const clearedFilters = {
       vehicleType: '',
@@ -117,29 +120,22 @@ const VehicleFilters: React.FC<VehicleFiltersProps> = ({
     }, 500);
   };
 
-  const getActiveFiltersCount = () => {
-    let count = 0;
-    if (currentFilters.vehicleType) count++;
-    if (currentFilters.brand) count++;
-    if (currentFilters.condition) count++;
-    if (currentFilters.fuelType) count++;
-    if (currentFilters.year) count++;
-    if (currentFilters.location) count++;
-    if (currentFilters.priceRange[0] > 0 || currentFilters.priceRange[1] < 100000) count++;
-    return count;
-  };
-
   return (
     <>
       <SearchFilters 
         onFiltersChange={applyFilters}
         onClearFilters={clearFilters}
+        initialFilters={currentFilters}
       />
 
       <FilterPopup
         isOpen={isFilterPopupOpen}
-        onClose={() => onFilterPopupToggle(false)}
+        onClose={() => {
+          console.log('VehicleFilters: Closing filter popup');
+          onFilterPopupToggle(false);
+        }}
         onApplyFilters={(filters) => {
+          console.log('VehicleFilters: Apply filters from popup:', filters);
           applyFilters(filters);
           onFilterPopupToggle(false);
         }}
