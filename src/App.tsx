@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
@@ -94,33 +93,8 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-conditions" element={<TermsConditions />} />
 
-          {/* Admin Routes with Sidebar Layout */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route
-            path="/admin/*"
-            element={
-              <div className="flex min-h-screen w-full">
-                <AdminSidebar />
-                <div className="flex-1 w-full">
-                  <Routes>
-                    <Route path="overview" element={<AdminOverview />} />
-                    <Route path="users" element={<AdminUsers />} />
-                    <Route path="dealers" element={<AdminDealers />} />
-                    <Route path="dealers/:id" element={<AdminDealerDetails />} />
-                    <Route path="vehicles" element={<AdminVehicles />} />
-                    <Route path="services" element={<AdminServices />} />
-                    <Route path="analytics" element={<AdminAnalytics />} />
-                    <Route path="approvals" element={<AdminApprovals />} />
-                    <Route path="community" element={<AdminCommunity />} />
-                    <Route path="content" element={<AdminContent />} />
-                    <Route path="roles" element={<AdminRoles />} />
-                    <Route path="security" element={<AdminSecurity />} />
-                    <Route path="system" element={<AdminSystem />} />
-                  </Routes>
-                </div>
-              </div>
-            }
-          />
+          {/* Admin Routes */}
+          <Route path="/admin/*" element={<AdminDashboard />} />
 
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />

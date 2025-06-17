@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminOverview from './admin/AdminOverview';
@@ -18,14 +18,17 @@ import AdminSecurity from './admin/AdminSecurity';
 import AdminSystem from './admin/AdminSystem';
 
 const AdminDashboard = () => {
+  console.log('AdminDashboard rendering');
+  
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-gray-50 w-full">
         <AdminSidebar />
-        <main className="flex-1 w-full">
-          <div className="w-full">
+        <main className="flex-1 w-full overflow-auto">
+          <div className="w-full h-full">
             <Routes>
-              <Route path="/" element={<AdminOverview />} />
+              <Route path="/" element={<Navigate to="/admin/overview" replace />} />
+              <Route path="/overview" element={<AdminOverview />} />
               <Route path="/users" element={<AdminUsers />} />
               <Route path="/vehicles" element={<AdminVehicles />} />
               <Route path="/dealers" element={<AdminDealers />} />

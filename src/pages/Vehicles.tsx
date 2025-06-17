@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Footer';
-import VehicleFilters from '@/components/VehicleFilters';
+import SimpleVehicleFilters from '@/components/SimpleVehicleFilters';
 import VehicleResultsHeader from '@/components/VehicleResultsHeader';
 import VehicleGrid from '@/components/VehicleGrid';
 
@@ -12,7 +12,6 @@ const Vehicles = () => {
   const [loading, setLoading] = useState(false);
   const [comparisonVehicles, setComparisonVehicles] = useState<any[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<any[]>([]);
-  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -91,6 +90,11 @@ const Vehicles = () => {
     }
   ];
 
+  // Initialize filtered vehicles
+  useEffect(() => {
+    setFilteredVehicles(vehicles);
+  }, []);
+
   const addToComparison = (vehicle: any) => {
     if (comparisonVehicles.length < 3 && !comparisonVehicles.find(v => v.id === vehicle.id)) {
       setComparisonVehicles([...comparisonVehicles, vehicle]);
@@ -109,11 +113,6 @@ const Vehicles = () => {
     }, 500);
   };
 
-  const getActiveFiltersCount = () => {
-    // This will be calculated by the VehicleFilters component
-    return 0;
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -126,13 +125,11 @@ const Vehicles = () => {
             <p className="text-xl text-gray-600">Find your perfect car, bike, or motorcycle from trusted dealers</p>
           </div>
 
-          {/* Filters */}
-          <VehicleFilters
+          {/* Simplified Filters */}
+          <SimpleVehicleFilters
             vehicles={vehicles}
             onFilteredVehiclesChange={setFilteredVehicles}
             onLoadingChange={setLoading}
-            isFilterPopupOpen={isFilterPopupOpen}
-            onFilterPopupToggle={setIsFilterPopupOpen}
           />
 
           {/* Results Header */}
@@ -143,8 +140,8 @@ const Vehicles = () => {
             onViewModeChange={setViewMode}
             sortBy={sortBy}
             onSortChange={setSortBy}
-            onFilterPopupOpen={() => setIsFilterPopupOpen(true)}
-            activeFiltersCount={getActiveFiltersCount()}
+            onFilterPopupOpen={() => {}}
+            activeFiltersCount={0}
           />
 
           {/* Vehicle Grid */}

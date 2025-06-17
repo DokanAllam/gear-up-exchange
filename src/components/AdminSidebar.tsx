@@ -29,7 +29,7 @@ import {
 const adminMenuItems = [
   {
     title: 'Dashboard',
-    url: '/admin',
+    url: '/admin/overview',
     icon: Home
   },
   {
@@ -95,9 +95,7 @@ const AdminSidebar = () => {
   const isCollapsed = state === 'collapsed';
 
   const isActive = (path: string) => {
-    if (path === '/admin' && location.pathname === '/admin') return true;
-    if (path !== '/admin' && location.pathname.startsWith(path)) return true;
-    return false;
+    return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
   return (
