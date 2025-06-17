@@ -33,12 +33,12 @@ const SimpleVehicleFilters: React.FC<SimpleVehicleFiltersProps> = ({
         }
         
         // Type filter
-        if (selectedType && vehicle.type !== selectedType) {
+        if (selectedType && selectedType !== 'all' && vehicle.type !== selectedType) {
           return false;
         }
         
         // Brand filter
-        if (selectedBrand && vehicle.brand !== selectedBrand) {
+        if (selectedBrand && selectedBrand !== 'all' && vehicle.brand !== selectedBrand) {
           return false;
         }
         
@@ -87,7 +87,7 @@ const SimpleVehicleFilters: React.FC<SimpleVehicleFiltersProps> = ({
               <SelectValue placeholder="Vehicle Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="car">Cars</SelectItem>
               <SelectItem value="motorcycle">Motorcycles</SelectItem>
               <SelectItem value="bike">Bikes</SelectItem>
@@ -99,7 +99,7 @@ const SimpleVehicleFilters: React.FC<SimpleVehicleFiltersProps> = ({
               <SelectValue placeholder="Brand" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Brands</SelectItem>
+              <SelectItem value="all">All Brands</SelectItem>
               <SelectItem value="BMW">BMW</SelectItem>
               <SelectItem value="Tesla">Tesla</SelectItem>
               <SelectItem value="Toyota">Toyota</SelectItem>
