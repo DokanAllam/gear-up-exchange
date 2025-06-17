@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
@@ -69,7 +70,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/store" element={<Store />} />
-          <Route path="/store/:id" element={<ProductDetail />} />
+          <Route path="/store/product/:id" element={<ProductDetail />} />
           <Route path="/community" element={<Community />} />
           <Route path="/community/:id" element={<QuestionDetail />} />
           <Route path="/careers" element={<Careers />} />
